@@ -10,6 +10,8 @@
 #include <QComboBox>
 #include <Qt>
 #include <QFlags>
+#include <QFile>
+#include <QFileDialog>
 
 
 viewForm::viewForm(QWidget *parent) :
@@ -155,22 +157,93 @@ void viewForm::on_pushButton_viewForm_exel_clicked()
     QModelIndex index;
     QVariant dataset;
     QString name;
-    int num;
+    QString num;
     QString unit;
-    double buyp;
-    double sell;
-//forward next
+    QString buyp;
+    QString sellp;
+    QByteArray tableRowString;
+    QString npp;
+    QTextCodec* defaultTextCodec = QTextCodec::codecForName("Windows-1251");
+    QTextCodec* BDtextCodec = QTextCodec::codecForName("UTF-8");
+
     int rowC = ui->tableView_viewForm->model()->rowCount();
+
+    QString filename = QFileDialog::getSaveFileName(
+    this,
+    tr("Save Document"),
+    QDir::currentPath(),
+    tr("Documents (*.csv)") );
+
+    QFile f(filename);
+    if(!f.open(QIODevice::WriteOnly | QIODevice::Text)){
+        QMessageBox::critical(0, "Error", "File not exist");
+        return;
+    }
+
+    QTextStream out(&f);
+
+    tableRowString = "№пп;Назва;Кількість;Ціна закупки;Ціна продажу;Од.Вим.\n";
+    QString unicodeStr = BDtextCodec->toUnicode(tableRowString);
+    QString unicodeTableStr;
+
+    out << unicodeStr.toUtf8();
+    qDebug()<<unicodeStr;
+
     for (int i = 0; i<rowC; i++){
+
+        tableRowString = "";
+        npp = QString::number(i+1);
+
         index = ui->tableView_viewForm->model()->index(i,1);
         dataset = ui->tableView_viewForm->model()->data(index);
         name = dataset.toString();
+
         index = ui->tableView_viewForm->model()->index(i,2);
         dataset = ui->tableView_viewForm->model()->data(index);
-        num = dataset.toInt();
-        index = ui->tableView_viewForm->model()->index(i,2);
+        num = dataset.toString().replace(".",",");
+
+        index = ui->tableView_viewForm->model()->index(i,5);
         dataset = ui->tableView_viewForm->model()->data(index);
         unit = dataset.toString();
-        index = ui->tableView_viewForm->model()->index(i,2);
+
+        index = ui->tableView_viewForm->model()->index(i,3);
+        dataset = ui->tableView_viewForm->model()->data(index);
+        buyp = dataset.toString().replace(".",",");
+
+        index = ui->tableView_viewForm->model()->index(i,4);
+        dataset = ui->tableView_viewForm->model()->data(index);
+        sellp = dataset.toString().replace(".",",");
+
+
+        tableRowString +=npp;
+        tableRowString +=";";
+        tableRowString += name;
+        tableRowString +=";";
+        tableRowString += num;
+        tableRowString += ";";
+        tableRowString += buyp;
+        tableRowString += ";";
+        tableRowString += sellp;
+        tableRowString += ";";
+        tableRowString += unit;
+        tableRowString += ";\n";
+        unicodeTableStr = tableRowString.data();
+        out << unicodeTableStr.toUtf8();                  //???????????????????????????????? ByteArray ~ QString
+        qDebug() << unicodeTableStr;
+
     }
+    QMessageBox::information(0, "Done!", "Export done. Success");
+    f.close();
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -127,6 +127,9 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
 
     int maxRow = ui->tableWidget_additemsform_table->rowCount();
 
+
+
+
     QString nameIt;
     int numIt;
     QString unitIt;
@@ -148,7 +151,7 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
         //it`s for adding values to query by names
         query.prepare("INSERT INTO stuff_list (name, number,units, buyprice, sellprice) VALUES (:name, :number, :units, :buyprice, :sellprice);");
         //and adding values
-        query.bindValue(":name", nameIt);
+        query.bindValue(":name", nameIt.toUtf8());
         query.bindValue(":number", numIt);
         query.bindValue(":units", unitIt);
         query.bindValue(":buyprice", buypIt);
