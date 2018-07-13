@@ -1,0 +1,13 @@
+INPUT(
+./release\main.o
+./release\mainwindow.o
+./release\additemsform.o
+./release\bdsettings.o
+./release\viewform.o
+./release\pcore.o
+./release\qrc_res.o
+./release\moc_mainwindow.o
+./release\moc_additemsform.o
+./release\moc_bdsettings.o
+./release\moc_viewform.o
+);

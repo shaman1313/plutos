@@ -28,14 +28,22 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     additemsform.cpp \
-    bdsettings.cpp
+    bdsettings.cpp \
+    viewform.cpp \
+    pcore.cpp
 
 HEADERS += \
         mainwindow.h \
     additemsform.h \
-    bdsettings.h
+    bdsettings.h \
+    viewform.h \
+    pcore.h
 
 FORMS += \
         mainwindow.ui \
     additemsform.ui \
-    bdsettings.ui
+    bdsettings.ui \
+    viewform.ui
+
+RESOURCES += \
+    res.qrc

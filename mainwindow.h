@@ -13,7 +13,6 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    void changeStatus(bool);
     ~MainWindow();
 
 private slots:
@@ -22,11 +21,9 @@ private slots:
 
     void on_pushButton_main_BDsettings_clicked();
 
-
-
-
-
     void on_pushButton_main_extering_clicked();
+
+    void on_pushButton_main_view_clicked();
 
 private:
     Ui::MainWindow *ui;

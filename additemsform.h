@@ -25,19 +25,10 @@ private slots:
 
     void on_pushButton_additemsform_delete_clicked();
 
-//    void on_pushButton_additemsform_edit_clicked();
-
     void recalculate(int);
 
     void on_pushButton_additemsform_ok_clicked();
 
-public slots:
-
-//    void receiving_item_informationE(QString, int, QString, double, double, int);
-
-signals:
-
-     void send_data(QString, int, QString, double, double, int);
 
 private:
     Ui::addItemsForm *ui;
