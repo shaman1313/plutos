@@ -161,75 +161,83 @@ void viewForm::on_pushButton_viewForm_exel_clicked()
     QString unit;
     QString buyp;
     QString sellp;
+    QString place;
     QByteArray tableRowString;
     QString npp;
-    QTextCodec* defaultTextCodec = QTextCodec::codecForName("Windows-1251");
+    //QTextCodec* defaultTextCodec = QTextCodec::codecForName("Windows-1251");
+    //codec for translation from utf-8 to unicode
     QTextCodec* BDtextCodec = QTextCodec::codecForName("UTF-8");
-
+    //count of all records in a table
     int rowC = ui->tableView_viewForm->model()->rowCount();
-
+    //save file window
     QString filename = QFileDialog::getSaveFileName(
     this,
     tr("Save Document"),
     QDir::currentPath(),
     tr("Documents (*.csv)") );
-
+    //creating file
     QFile f(filename);
     if(!f.open(QIODevice::WriteOnly | QIODevice::Text)){
         QMessageBox::critical(0, "Error", "File not exist");
         return;
     }
-
+    //text stream for writing to the file
     QTextStream out(&f);
-
-    tableRowString = "№пп;Назва;Кількість;Ціна закупки;Ціна продажу;Од.Вим.\n";
+    //charset for file, windows because MS EXEL don`t work with utf-8 and unicode
+    out.setCodec("Windows-1251");
+    //writing header
+    tableRowString = "№пп;Назва;Кількість;Од.Вим.;Ціна закупки;Ціна продажу; Точка\n";
     QString unicodeStr = BDtextCodec->toUnicode(tableRowString);
     QString unicodeTableStr;
-
-    out << unicodeStr.toUtf8();
-    qDebug()<<unicodeStr;
-
+    out << unicodeStr;
+    //loop for writing records from table to *.csv
     for (int i = 0; i<rowC; i++){
 
         tableRowString = "";
+        //number (starts from 1)
         npp = QString::number(i+1);
-
+        //name
         index = ui->tableView_viewForm->model()->index(i,1);
         dataset = ui->tableView_viewForm->model()->data(index);
         name = dataset.toString();
-
+        //number of things, replase . by , because EXEL work with comma as a decimal point
         index = ui->tableView_viewForm->model()->index(i,2);
         dataset = ui->tableView_viewForm->model()->data(index);
         num = dataset.toString().replace(".",",");
-
+        //unit
         index = ui->tableView_viewForm->model()->index(i,5);
         dataset = ui->tableView_viewForm->model()->data(index);
         unit = dataset.toString();
-
+        //buy price
         index = ui->tableView_viewForm->model()->index(i,3);
         dataset = ui->tableView_viewForm->model()->data(index);
         buyp = dataset.toString().replace(".",",");
-
+        //sell price
         index = ui->tableView_viewForm->model()->index(i,4);
         dataset = ui->tableView_viewForm->model()->data(index);
         sellp = dataset.toString().replace(".",",");
+        //place
+        index = ui->tableView_viewForm->model()->index(i,5);
+        dataset = ui->tableView_viewForm->model()->data(index);
+        place = dataset.toString();
 
-
+        //prepare and write string to CSV format
         tableRowString +=npp;
         tableRowString +=";";
         tableRowString += name;
         tableRowString +=";";
         tableRowString += num;
         tableRowString += ";";
+        tableRowString += unit;
+        tableRowString += ";";
         tableRowString += buyp;
         tableRowString += ";";
         tableRowString += sellp;
         tableRowString += ";";
-        tableRowString += unit;
+        tableRowString += place;
         tableRowString += ";\n";
         unicodeTableStr = tableRowString.data();
-        out << unicodeTableStr.toUtf8();                  //???????????????????????????????? ByteArray ~ QString
-        qDebug() << unicodeTableStr;
+        out << unicodeTableStr;
 
     }
     QMessageBox::information(0, "Done!", "Export done. Success");

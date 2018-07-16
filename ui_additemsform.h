@@ -43,7 +43,7 @@ public:
     {
         if (addItemsForm->objectName().isEmpty())
             addItemsForm->setObjectName(QStringLiteral("addItemsForm"));
-        addItemsForm->resize(988, 500);
+        addItemsForm->resize(1081, 500);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -83,8 +83,8 @@ public:
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         tableWidget_additemsform_table = new QTableWidget(addItemsForm);
-        if (tableWidget_additemsform_table->columnCount() < 6)
-            tableWidget_additemsform_table->setColumnCount(6);
+        if (tableWidget_additemsform_table->columnCount() < 7)
+            tableWidget_additemsform_table->setColumnCount(7);
         QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
         tableWidget_additemsform_table->setHorizontalHeaderItem(0, __qtablewidgetitem);
         QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
@@ -97,6 +97,8 @@ public:
         tableWidget_additemsform_table->setHorizontalHeaderItem(4, __qtablewidgetitem4);
         QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
         tableWidget_additemsform_table->setHorizontalHeaderItem(5, __qtablewidgetitem5);
+        QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
+        tableWidget_additemsform_table->setHorizontalHeaderItem(6, __qtablewidgetitem6);
         tableWidget_additemsform_table->setObjectName(QStringLiteral("tableWidget_additemsform_table"));
         tableWidget_additemsform_table->setEnabled(true);
         sizePolicy.setHeightForWidth(tableWidget_additemsform_table->sizePolicy().hasHeightForWidth());
@@ -181,7 +183,9 @@ public:
         QTableWidgetItem *___qtablewidgetitem4 = tableWidget_additemsform_table->horizontalHeaderItem(4);
         ___qtablewidgetitem4->setText(QApplication::translate("addItemsForm", "\320\237\321\200\320\276\320\264\320\260\320\266", nullptr));
         QTableWidgetItem *___qtablewidgetitem5 = tableWidget_additemsform_table->horizontalHeaderItem(5);
-        ___qtablewidgetitem5->setText(QApplication::translate("addItemsForm", "\320\237\321\200\320\270\320\261\321\203\321\202\320\276\320\272", nullptr));
+        ___qtablewidgetitem5->setText(QApplication::translate("addItemsForm", "\320\242\320\276\321\207\320\272\320\260", nullptr));
+        QTableWidgetItem *___qtablewidgetitem6 = tableWidget_additemsform_table->horizontalHeaderItem(6);
+        ___qtablewidgetitem6->setText(QApplication::translate("addItemsForm", "\320\237\321\200\320\270\320\261\321\203\321\202\320\276\320\272", nullptr));
         pushButton_additemsform_ok->setText(QApplication::translate("addItemsForm", "\320\236\320\232", nullptr));
         pushButton_additemsform_cancel->setText(QApplication::translate("addItemsForm", "\320\222\321\226\320\264\320\274\321\226\320\275\320\270\321\202\320\270", nullptr));
     } // retranslateUi

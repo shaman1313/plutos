@@ -38,7 +38,7 @@ void addItemsForm::recalculate(int row){
 
     //if one of data cell is unset don`t recalculate profit
     if(ui->tableWidget_additemsform_table->item(row,1)==0 || ui->tableWidget_additemsform_table->item(row,3)==0 ||
-            ui->tableWidget_additemsform_table->item(row,4)==0 || ui->tableWidget_additemsform_table->item(row,5)==0)
+            ui->tableWidget_additemsform_table->item(row,4)==0 || ui->tableWidget_additemsform_table->item(row,6)==0)
     {
         return;
     }
@@ -50,7 +50,7 @@ void addItemsForm::recalculate(int row){
     double profit = 0.0;
 
     profit = (sellPrice - buyPrice)*number;
-    ui->tableWidget_additemsform_table->item(row, 5)->setText(QString::number(profit));
+    ui->tableWidget_additemsform_table->item(row, 6)->setText(QString::number(profit));
 
 }
 
@@ -65,7 +65,9 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     QTableWidgetItem *units = new QTableWidgetItem;
     QTableWidgetItem *buyprice = new QTableWidgetItem;
     QTableWidgetItem *sellprice = new QTableWidgetItem;
+    QTableWidgetItem *place = new QTableWidgetItem;
     QTableWidgetItem *profit = new QTableWidgetItem;
+
 
     //for add row next after the curent
     int curRow = ui->tableWidget_additemsform_table->rowCount();
@@ -78,16 +80,26 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     ui->tableWidget_additemsform_table->setItem(curRow, 2, units);
     ui->tableWidget_additemsform_table->setItem(curRow, 3, buyprice);
     ui->tableWidget_additemsform_table->setItem(curRow, 4, sellprice);
-    ui->tableWidget_additemsform_table->setItem(curRow, 5, profit);
-    //setting unitbox to cell
+    ui->tableWidget_additemsform_table->setItem(curRow, 5, place);
+    ui->tableWidget_additemsform_table->setItem(curRow, 6, profit);
+    //setting unitbox to cell "units"
     QComboBox *unitBox = new QComboBox;
-    unitBox->insertItem(0, "kg");
-    unitBox->insertItem(1, "pack");
+    QString unitText[2];
+    unitText[0] = "Кг.";
+    unitText[1] = "Пак.";
+    unitBox->insertItem(0, unitText[0].toUtf8());
+    unitBox->insertItem(1, unitText[1].toUtf8());
     unitBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     ui->tableWidget_additemsform_table->setCellWidget(curRow,2,unitBox);
+    //setting placebox to cell "place"
+    QComboBox *placeBox = new QComboBox;
+    placeBox->insertItem(0, "Центр");
+    placeBox->insertItem(1, "Сонечко");
+    placeBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    ui->tableWidget_additemsform_table->setCellWidget(curRow,5,placeBox);
 
     //setting profit cell uneditable
-    ui->tableWidget_additemsform_table->item(curRow,5)->setFlags((ui->tableWidget_additemsform_table->item(curRow,5)->flags()) & ~Qt::ItemIsEditable);
+    ui->tableWidget_additemsform_table->item(curRow,6)->setFlags((ui->tableWidget_additemsform_table->item(curRow,6)->flags()) & ~Qt::ItemIsEditable);
     //connecting SIGNAL cellChanged for refreshing profit cell
     connect(ui->tableWidget_additemsform_table, ui->tableWidget_additemsform_table->cellChanged, this, addItemsForm::recalculate);
 
@@ -133,29 +145,34 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
     QString nameIt;
     int numIt;
     QString unitIt;
+    QString placeIt;
     double buypIt;
     double sellIt;
     QComboBox *ubox = new QComboBox;
+    QComboBox *pbox = new QComboBox;
     //main loop to read row by row in a table
     for (int row = maxRow-1; row>=0; row--){
         //loading data from table
         nameIt = ui->tableWidget_additemsform_table->item(row, 0)->text();
         numIt = ui->tableWidget_additemsform_table->item(row, 1)->text().toInt();
 
-        ubox =  qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row,2)); //I don`t know WTF, this is advice from StackOverflow
+        ubox = qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row,2)); //I don`t know WTF, this is advice from StackOverflow
         unitIt = ubox->currentText();
+        pbox = qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row,5));
+        placeIt = pbox->currentText();
         buypIt = ui->tableWidget_additemsform_table->item(row, 3)->text().toDouble();
         sellIt = ui->tableWidget_additemsform_table->item(row, 4)->text().toDouble();
         //query to DB
         QSqlQuery query (db);
         //it`s for adding values to query by names
-        query.prepare("INSERT INTO stuff_list (name, number,units, buyprice, sellprice) VALUES (:name, :number, :units, :buyprice, :sellprice);");
+        query.prepare("INSERT INTO stuff_list (name, number,units, buyprice, sellprice, place) VALUES (:name, :number, :units, :buyprice, :sellprice, :place);");
         //and adding values
         query.bindValue(":name", nameIt.toUtf8());
         query.bindValue(":number", numIt);
         query.bindValue(":units", unitIt);
         query.bindValue(":buyprice", buypIt);
         query.bindValue(":sellprice", sellIt);
+        query.bindValue(":place", placeIt);
         //execution of query and check for errors
         if(!query.exec()){
             qDebug()<< "Can`t do INSERT operation. " << query.lastError();
