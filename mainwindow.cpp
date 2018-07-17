@@ -4,6 +4,7 @@
 #include "bdsettings.h"
 #include "viewform.h"
 #include "pcore.h"
+#include "sellform.h"
 #include <QMessageBox>
 #include <QObject>
 #include <QString>
@@ -40,7 +41,8 @@ void MainWindow::on_pushButton_main_BDsettings_clicked()
 //adding transactions (selling)
 void MainWindow::on_pushButton_main_extering_clicked()
 {
-
+    sellForm *sellF = new sellForm;
+    sellF->show();
 
 
 }

@@ -30,20 +30,23 @@ SOURCES += \
     additemsform.cpp \
     bdsettings.cpp \
     viewform.cpp \
-    pcore.cpp
+    pcore.cpp \
+    sellform.cpp
 
 HEADERS += \
         mainwindow.h \
     additemsform.h \
     bdsettings.h \
     viewform.h \
-    pcore.h
+    pcore.h \
+    sellform.h
 
 FORMS += \
         mainwindow.ui \
     additemsform.ui \
     bdsettings.ui \
-    viewform.ui
+    viewform.ui \
+    sellform.ui
 
 RESOURCES += \
     res.qrc

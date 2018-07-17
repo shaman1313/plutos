@@ -144,9 +144,6 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
 
     int maxRow = ui->tableWidget_additemsform_table->rowCount();
 
-
-
-
     QString nameIt;
     int numIt;
     QString unitIt;
@@ -163,7 +160,6 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
         //loading data from table
         nameIt = ui->tableWidget_additemsform_table->item(row, 0)->text();
         numIt = ui->tableWidget_additemsform_table->item(row, 1)->text().toInt();
-
         ubox = qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row,2)); //I don`t know WTF, this is advice from StackOverflow
         unitIt = ubox->currentText();
         pbox = qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row,5));
