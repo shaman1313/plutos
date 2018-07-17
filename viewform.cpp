@@ -86,17 +86,35 @@ void viewForm::on_pushButton_viewform_search_clicked()
     //sph is preparing filter for function 'getContent'
     QString sph = "";
     int searchType = ui->comboBox_viewForm_serchType->currentIndex();
+    int searchPlace = ui->comboBox_viewForm_place->currentIndex();
     int sizeS;
 
     //all construction down is filter preparing
     //if search phrase is empty? all record are in a table
     //otherwise
-    if(!searchPhrase.isEmpty()){
+    if(!searchPhrase.isEmpty() || searchPlace!=0){
+
+        //select the plase
+        switch (searchPlace) {
+        case 0:
+            break;
+        case 1:
+            sph += "place = 'Центр' ";
+            break;
+        case 2:
+            sph += "place = 'Сонечко' ";
+            break;
+        default:
+            break;
+        }
+
+
+
         //search by type: name or number of things or price ... other maybe
         switch (searchType) {
         //if search by name, searching will be out records contains searchphrase
         case 0:
-            sph = "name ";
+            sph += "AND name ";
             sph += "LIKE '%";
             sph+=searchPhrase;
             sph+="%'";
@@ -105,7 +123,7 @@ void viewForm::on_pushButton_viewform_search_clicked()
         //we check first 2 element in phrase, and if it`s filter signs we add it to query
         //by default, using '=' sign
         case 1:
-            sph = "number ";
+            sph = "AND number ";
             if (searchPhrase[0]==">" || searchPhrase[0]=="<" || searchPhrase[0]=="=" || searchPhrase=="!"){
                 sph+= searchPhrase[0];//get first filter sign if it is
                 sizeS = searchPhrase.size() - 1;//excluding this sign from phrase
@@ -125,7 +143,7 @@ void viewForm::on_pushButton_viewform_search_clicked()
         //sell price search use the same signs
         //the same algorithm
         case 2:
-            sph = "sellprice ";
+            sph = "AND sellprice ";
             if (searchPhrase[0]==">" || searchPhrase[0]=="<" || searchPhrase[0]=="=" || searchPhrase=="!"){
                 sph+= searchPhrase[0];
                 sizeS = searchPhrase.size() - 1;
@@ -217,7 +235,7 @@ void viewForm::on_pushButton_viewForm_exel_clicked()
         dataset = ui->tableView_viewForm->model()->data(index);
         sellp = dataset.toString().replace(".",",");
         //place
-        index = ui->tableView_viewForm->model()->index(i,5);
+        index = ui->tableView_viewForm->model()->index(i,6);
         dataset = ui->tableView_viewForm->model()->data(index);
         place = dataset.toString();
 
@@ -245,13 +263,7 @@ void viewForm::on_pushButton_viewForm_exel_clicked()
 }
 
 
+void viewForm::on_pushButton_viewForm_ok_clicked()
+{
 
-
-
-
-
-
-
-
-
-
+}

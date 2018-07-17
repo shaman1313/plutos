@@ -37,6 +37,7 @@ public:
     QLineEdit *lineEdit_viewForm_search;
     QPushButton *pushButton_viewform_search;
     QSpacerItem *horizontalSpacer_3;
+    QComboBox *comboBox_viewForm_place;
     QHBoxLayout *horizontalLayout_2;
     QTableView *tableView_viewForm;
     QHBoxLayout *horizontalLayout_5;
@@ -94,6 +95,14 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer_3);
 
+        comboBox_viewForm_place = new QComboBox(viewForm);
+        comboBox_viewForm_place->addItem(QString());
+        comboBox_viewForm_place->addItem(QString());
+        comboBox_viewForm_place->addItem(QString());
+        comboBox_viewForm_place->setObjectName(QStringLiteral("comboBox_viewForm_place"));
+
+        horizontalLayout->addWidget(comboBox_viewForm_place);
+
 
         horizontalLayout_6->addLayout(horizontalLayout);
 
@@ -106,7 +115,7 @@ public:
         tableView_viewForm->setObjectName(QStringLiteral("tableView_viewForm"));
         tableView_viewForm->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
         tableView_viewForm->setAutoScroll(false);
-        tableView_viewForm->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        tableView_viewForm->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::SelectedClicked);
         tableView_viewForm->setAlternatingRowColors(true);
         tableView_viewForm->setSelectionMode(QAbstractItemView::NoSelection);
         tableView_viewForm->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -169,6 +178,10 @@ public:
         comboBox_viewForm_serchType->setItemText(2, QApplication::translate("viewForm", "\320\267\320\260 \321\206\321\226\320\275\320\276\321\216", nullptr));
 
         pushButton_viewform_search->setText(QApplication::translate("viewForm", "\320\237\320\276\321\210\321\203\320\272", nullptr));
+        comboBox_viewForm_place->setItemText(0, QApplication::translate("viewForm", "\320\222\321\201\321\226...", nullptr));
+        comboBox_viewForm_place->setItemText(1, QApplication::translate("viewForm", "\320\246\320\265\320\275\321\202\321\200", nullptr));
+        comboBox_viewForm_place->setItemText(2, QApplication::translate("viewForm", "\320\241\320\276\320\275\320\265\321\207\320\272\320\276", nullptr));
+
         pushButton_viewForm_exel->setText(QApplication::translate("viewForm", "\320\225\320\272\321\201\320\277\320\276\321\200\321\202 \320\262 Exel", nullptr));
         pushButton_viewForm_ok->setText(QApplication::translate("viewForm", "\320\236\320\232", nullptr));
         pushButton_viewForm_cancel->setText(QApplication::translate("viewForm", "\320\222\321\226\320\264\320\274\321\226\320\275\320\270\321\202\320\270", nullptr));

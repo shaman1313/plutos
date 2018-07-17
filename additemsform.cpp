@@ -43,14 +43,23 @@ void addItemsForm::recalculate(int row){
         return;
     }
 
+    QBrush redAlert;
+    redAlert.setStyle(Qt::Dense4Pattern);
+    redAlert.setColor("red");
     //loadinf data and calculating
     int number =(ui->tableWidget_additemsform_table->item(row, 1)->text()).toInt();
-    double buyPrice = (ui->tableWidget_additemsform_table->item(row, 3)->text()).toDouble();
-    double sellPrice = (ui->tableWidget_additemsform_table->item(row, 4)->text()).toDouble();
+    double buyPrice = (ui->tableWidget_additemsform_table->item(row, 3)->text().replace(",", ".")).toDouble();
+    double sellPrice = (ui->tableWidget_additemsform_table->item(row, 4)->text().replace(",", ".")).toDouble();
     double profit = 0.0;
 
     profit = (sellPrice - buyPrice)*number;
     ui->tableWidget_additemsform_table->item(row, 6)->setText(QString::number(profit));
+    if(profit<=0.0){
+        ui->tableWidget_additemsform_table->item(row,6)->setBackground(redAlert);
+    }
+    else{
+        ui->tableWidget_additemsform_table->item(row,6)->setBackground(Qt::NoBrush);
+    }
 
 }
 
@@ -68,7 +77,6 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     QTableWidgetItem *place = new QTableWidgetItem;
     QTableWidgetItem *profit = new QTableWidgetItem;
 
-
     //for add row next after the curent
     int curRow = ui->tableWidget_additemsform_table->rowCount();
 
@@ -84,17 +92,14 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     ui->tableWidget_additemsform_table->setItem(curRow, 6, profit);
     //setting unitbox to cell "units"
     QComboBox *unitBox = new QComboBox;
-    QString unitText[2];
-    unitText[0] = "Êã.";
-    unitText[1] = "Ïàê.";
-    unitBox->insertItem(0, unitText[0].toUtf8());
-    unitBox->insertItem(1, unitText[1].toUtf8());
+    unitBox->insertItem(0, "ÐŸÐ°Ðº.");
+    unitBox->insertItem(1, "ÐšÐ³.");
     unitBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     ui->tableWidget_additemsform_table->setCellWidget(curRow,2,unitBox);
     //setting placebox to cell "place"
     QComboBox *placeBox = new QComboBox;
-    placeBox->insertItem(0, "Öåíòð");
-    placeBox->insertItem(1, "Ñîíå÷êî");
+    placeBox->insertItem(0, "Ð¦ÐµÐ½Ñ‚Ñ€");
+    placeBox->insertItem(1, "Ð¡Ð¾Ð½ÐµÑ‡ÐºÐ¾");
     placeBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     ui->tableWidget_additemsform_table->setCellWidget(curRow,5,placeBox);
 

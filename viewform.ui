@@ -90,6 +90,25 @@
            </property>
           </spacer>
          </item>
+         <item>
+          <widget class="QComboBox" name="comboBox_viewForm_place">
+           <item>
+            <property name="text">
+             <string>Всі...</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Центр</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Сонечко</string>
+            </property>
+           </item>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -105,7 +124,7 @@
           <bool>false</bool>
          </property>
          <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
+          <set>QAbstractItemView::DoubleClicked|QAbstractItemView::SelectedClicked</set>
          </property>
          <property name="alternatingRowColors">
           <bool>true</bool>

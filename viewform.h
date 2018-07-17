@@ -21,6 +21,8 @@ private slots:
     void on_pushButton_viewform_search_clicked();
     void on_pushButton_viewForm_exel_clicked();
 
+    void on_pushButton_viewForm_ok_clicked();
+
 private:
     Ui::viewForm *ui;
 };
