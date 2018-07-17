@@ -184,8 +184,6 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
 
         if(!query.exec()){
             success = false;
-
-            qDebug()<< "Can`t do INSERT operation. " << query.lastError();
             continue;
         }
         //remove row after success operation
