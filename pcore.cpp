@@ -19,12 +19,11 @@ bool createDBconnection(QString cName){
     db.setPassword("1111");
     if(!db.open()){
         qDebug() << "Can`t open database. " << db.lastError();
-        QMessageBox::critical(0, "Database error", db.lastError().text());
+        QMessageBox::critical(0, "Помилка БД", db.lastError().text());
         return false;
     }
     else
     {
-        //QMessageBox::information(0,"Connection is success","All is good. Just close this window");
         return true;
     }
 }

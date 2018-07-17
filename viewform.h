@@ -2,6 +2,7 @@
 #define VIEWFORM_H
 
 #include <QWidget>
+#include <QtSql>
 
 namespace Ui {
 class viewForm;
@@ -25,6 +26,7 @@ private slots:
 
 private:
     Ui::viewForm *ui;
+    QSqlTableModel *pmodel=0;
 };
 
 #endif // VIEWFORM_H

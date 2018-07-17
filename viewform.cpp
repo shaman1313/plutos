@@ -19,13 +19,14 @@ viewForm::viewForm(QWidget *parent) :
     ui(new Ui::viewForm)
 {
     ui->setupUi(this);
+    ui->pushButton_viewForm_ok->setText("Внести зміни");
     //in this case QTableView stay in memory after closing form and database warning were occured
     //deleting connection is impossible
     //with this attribute all is OK
     setAttribute(Qt::WA_DeleteOnClose);
     //loading view on start
     if(!getContent()){
-        QMessageBox::critical(0, "Error", "Unenabel to read content");
+        QMessageBox::critical(0, "Error", "Неможливо отримати вміст");
     }
     //catching 'ENTER key pressed' in search line
     connect(ui->lineEdit_viewForm_search, ui->lineEdit_viewForm_search->returnPressed, this, viewForm::on_pushButton_viewform_search_clicked);
@@ -45,13 +46,14 @@ bool viewForm::getContent(QString f){
     //check if DB is alive
     if (!db.isOpen()){
         if(!db.open()){
-            QMessageBox::critical(0, "Database error", db.lastError().text());
+            QMessageBox::critical(0, "Помилка БД", db.lastError().text());
             return false;
         }
 
     }
     //Model is SQL model of table in DB
     QSqlTableModel *model = new QSqlTableModel(this, db);
+    this->pmodel = model;
     //setting table to model
     model->setTable("stuff_list");
     //filter for model
@@ -182,7 +184,7 @@ void viewForm::on_pushButton_viewForm_exel_clicked()
     QString place;
     QByteArray tableRowString;
     QString npp;
-    //QTextCodec* defaultTextCodec = QTextCodec::codecForName("Windows-1251");
+
     //codec for translation from utf-8 to unicode
     QTextCodec* BDtextCodec = QTextCodec::codecForName("UTF-8");
     //count of all records in a table
@@ -196,7 +198,7 @@ void viewForm::on_pushButton_viewForm_exel_clicked()
     //creating file
     QFile f(filename);
     if(!f.open(QIODevice::WriteOnly | QIODevice::Text)){
-        QMessageBox::critical(0, "Error", "File not exist");
+        QMessageBox::critical(0, "Помилка", "Файл не знайдено");
         return;
     }
     //text stream for writing to the file
@@ -258,12 +260,18 @@ void viewForm::on_pushButton_viewForm_exel_clicked()
         out << unicodeTableStr;
 
     }
-    QMessageBox::information(0, "Done!", "Export done. Success");
+    QMessageBox::information(0, "Виконано!", "Експорт здійснено успішно");
     f.close();
 }
 
 
 void viewForm::on_pushButton_viewForm_ok_clicked()
 {
-
+    QSqlTableModel *model = this->pmodel;
+    if(!model->submitAll()){
+        QMessageBox::critical(0, "Помилка БД", model->lastError().text());
+    }
+    else{
+        QMessageBox::information(0, "Виконано", "Всі зміни збережено в БД");
+    }
 }
