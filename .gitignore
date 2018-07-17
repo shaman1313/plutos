@@ -2,6 +2,8 @@
 *~
 *.autosave
 plutos.pro.user*
+*.Debug
+*.Release
 
 #examples:
 # no .a files
