@@ -27,6 +27,7 @@ private slots:
 private:
     Ui::viewForm *ui;
     QSqlTableModel *pmodel=nullptr;
+
 };
 
 #endif // VIEWFORM_H

@@ -39,7 +39,8 @@ HEADERS += \
     bdsettings.h \
     viewform.h \
     pcore.h \
-    sellform.h
+    sellform.h \
+    yascompleter.h
 
 FORMS += \
         mainwindow.ui \

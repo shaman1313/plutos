@@ -18,7 +18,8 @@ public:
 
 private slots:
     void on_pushButton_sellform_cancel_clicked();
-
+    void index_of_activated(int);
+    void recalculate(int);
     void on_pushButton_sellForm_search_clicked();
 public slots:
 
@@ -27,6 +28,9 @@ public slots:
 private:
     Ui::sellForm *ui;
     QSqlTableModel* pmodel = nullptr;
+    //QModelIndex mIndex;
+    int rowIndex;
+
 };
 
 #endif // SELLFORM_H
