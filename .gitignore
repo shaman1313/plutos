@@ -4,7 +4,7 @@
 plutos.pro.user*
 *.Debug
 *.Release
-
+/debug
 #examples:
 # no .a files
 #*.a
