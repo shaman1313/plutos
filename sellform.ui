@@ -68,11 +68,6 @@
            <string>Центр</string>
           </property>
          </item>
-         <item>
-          <property name="text">
-           <string>Сонечко</string>
-          </property>
-         </item>
         </widget>
        </item>
       </layout>

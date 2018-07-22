@@ -4,7 +4,10 @@
 plutos.pro.user*
 *.Debug
 *.Release
-/debug
+debug/
+release/
+*.csv
+*.stash
 #examples:
 # no .a files
 #*.a

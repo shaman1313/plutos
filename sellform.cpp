@@ -29,7 +29,7 @@ sellForm::sellForm(QWidget *parent) :
     filter += "'";
 
     //setting table to model
-    model->setTable("stuff_list");
+    model->setTable("stuff");
     model->setFilter(filter);
     //select query
     model->select();
@@ -91,7 +91,7 @@ void sellForm::recalculate(int row){
     redAlert.setStyle(Qt::Dense4Pattern);
     redAlert.setColor("red");
     //loadinf data and calculating
-    int number =(ui->tableWidget_sellForm_table->item(row, 1)->text()).toInt();
+    double number =(ui->tableWidget_sellForm_table->item(row, 1)->text().replace(",", ".")).toDouble();
     double sellprice = (ui->tableWidget_sellForm_table->item(row, 2)->text().replace(",", ".")).toDouble();
     //double buyprice = this->pmodel-> ;
     double profit = 0.0;

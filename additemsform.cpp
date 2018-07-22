@@ -47,7 +47,7 @@ void addItemsForm::recalculate(int row){
     redAlert.setStyle(Qt::Dense4Pattern);
     redAlert.setColor("red");
     //loadinf data and calculating
-    int number =(ui->tableWidget_additemsform_table->item(row, 1)->text()).toInt();
+    double number =(ui->tableWidget_additemsform_table->item(row, 1)->text()).toDouble();
     double buyPrice = (ui->tableWidget_additemsform_table->item(row, 3)->text().replace(",", ".")).toDouble();
     double sellPrice = (ui->tableWidget_additemsform_table->item(row, 4)->text().replace(",", ".")).toDouble();
     double profit = 0.0;
@@ -99,7 +99,7 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     //setting placebox to cell "place"
     QComboBox *placeBox = new QComboBox;
     placeBox->insertItem(0, "Центр");
-    placeBox->insertItem(1, "Сонечко");
+    //placeBox->insertItem(1, "Сонечко");
     placeBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     ui->tableWidget_additemsform_table->setCellWidget(curRow,5,placeBox);
 
@@ -145,9 +145,10 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
     int maxRow = ui->tableWidget_additemsform_table->rowCount();
 
     QString nameIt;
-    int numIt;
-    QString unitIt;
-    QString placeIt;
+    double numIt;
+    int unitIt;
+
+    int placeIt;
     double buypIt;
     double sellIt;
     QComboBox *ubox = new QComboBox;
@@ -159,16 +160,17 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
     for (int row = maxRow-1; row>=0; row--){
         //loading data from table
         nameIt = ui->tableWidget_additemsform_table->item(row, 0)->text();
-        numIt = ui->tableWidget_additemsform_table->item(row, 1)->text().toInt();
+        numIt = ui->tableWidget_additemsform_table->item(row, 1)->text().replace(",", ".").toDouble();
         ubox = qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row,2)); //I don`t know WTF, this is advice from StackOverflow
-        unitIt = ubox->currentText();
+        unitIt = ubox->currentIndex();
+
         pbox = qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row,5));
-        placeIt = pbox->currentText();
-        buypIt = ui->tableWidget_additemsform_table->item(row, 3)->text().toDouble();
-        sellIt = ui->tableWidget_additemsform_table->item(row, 4)->text().toDouble();
+        placeIt = pbox->currentIndex();
+        buypIt = ui->tableWidget_additemsform_table->item(row, 3)->text().replace(",", ".").toDouble();
+        sellIt = ui->tableWidget_additemsform_table->item(row, 4)->text().replace(",", ".").toDouble();
 
         //it`s for adding values to query by names
-        query.prepare("INSERT INTO stuff_list (name, number,units, buyprice, sellprice, place) VALUES (:name, :number, :units, :buyprice, :sellprice, :place);");
+        query.prepare("INSERT INTO stuff (name, number,units, buyprice, sellprice, place) VALUES (:name, :number, :units, :buyprice, :sellprice, :place);");
         //and adding values
         query.bindValue(":name", nameIt.toUtf8());
         query.bindValue(":number", numIt);

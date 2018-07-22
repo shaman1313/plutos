@@ -13,7 +13,7 @@
 *************************************************************/
 bool createDBconnection(QString cName){
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL", cName);
-    db.setDatabaseName("test");
+    db.setDatabaseName("maindb");
     db.setHostName("localhost");
     db.setUserName("root");
     db.setPassword("1111");

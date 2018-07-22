@@ -55,7 +55,7 @@ bool viewForm::getContent(QString f){
     QSqlTableModel *model = new QSqlTableModel(this, db);
     this->pmodel = model;
     //setting table to model
-    model->setTable("stuff_list");
+    model->setTable("stuff");
     //filter for model
     //filter is statement 'WHERE' without word where
     //'name LIKE %abc%' for example
@@ -66,12 +66,17 @@ bool viewForm::getContent(QString f){
     model->select();
     //denied record to DB automaticly
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    model->
     //model to table
     ui->tableView_viewForm->setModel(model);
     //header to window size
     ui->tableView_viewForm->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     //hiding ID column
     ui->tableView_viewForm->hideColumn(0);
+    ui->tableView_viewForm->hideColumn(6);
+    ui->tableView_viewForm->hideColumn(7);
+    ui->tableView_viewForm->hideColumn(8);
+    ui->tableView_viewForm->hideColumn(9);
 
     return true;
 }
@@ -94,17 +99,17 @@ void viewForm::on_pushButton_viewform_search_clicked()
     //all construction down is filter preparing
     //if search phrase is empty? all record are in a table
     //otherwise
-    if(!searchPhrase.isEmpty() || searchPlace!=0){
+    if(!searchPhrase.isEmpty()){
 
         //select the plase
         switch (searchPlace) {
         case 0:
             break;
         case 1:
-            sph += "place = 'Центр' ";
+            //sph += "place = 0 AND ";
             break;
         case 2:
-            sph += "place = 'Сонечко' ";
+            //sph += "place = 1 AND ";
             break;
         default:
             break;
@@ -116,7 +121,7 @@ void viewForm::on_pushButton_viewform_search_clicked()
         switch (searchType) {
         //if search by name, searching will be out records contains searchphrase
         case 0:
-            sph += "AND name ";
+            sph += "name ";
             sph += "LIKE '%";
             sph+=searchPhrase;
             sph+="%'";
@@ -125,7 +130,7 @@ void viewForm::on_pushButton_viewform_search_clicked()
         //we check first 2 element in phrase, and if it`s filter signs we add it to query
         //by default, using '=' sign
         case 1:
-            sph = "AND number ";
+            sph = "number ";
             if (searchPhrase[0]==">" || searchPhrase[0]=="<" || searchPhrase[0]=="=" || searchPhrase=="!"){
                 sph+= searchPhrase[0];//get first filter sign if it is
                 sizeS = searchPhrase.size() - 1;//excluding this sign from phrase
@@ -145,7 +150,7 @@ void viewForm::on_pushButton_viewform_search_clicked()
         //sell price search use the same signs
         //the same algorithm
         case 2:
-            sph = "AND sellprice ";
+            sph = "sellprice ";
             if (searchPhrase[0]==">" || searchPhrase[0]=="<" || searchPhrase[0]=="=" || searchPhrase=="!"){
                 sph+= searchPhrase[0];
                 sizeS = searchPhrase.size() - 1;
@@ -178,9 +183,11 @@ void viewForm::on_pushButton_viewForm_exel_clicked()
     QVariant dataset;
     QString name;
     QString num;
+    int unitCode;
     QString unit;
     QString buyp;
     QString sellp;
+    int placeCode;
     QString place;
     QByteArray tableRowString;
     QString npp;
@@ -227,7 +234,18 @@ void viewForm::on_pushButton_viewForm_exel_clicked()
         //unit
         index = ui->tableView_viewForm->model()->index(i,5);
         dataset = ui->tableView_viewForm->model()->data(index);
-        unit = dataset.toString();
+        unitCode = dataset.toInt();
+
+        switch (unitCode){
+        case 0:
+            unit = "Пак.";
+            break;
+        case 1:
+            unit = "кг.";
+            break;
+        default:
+            break;
+        }
         //buy price
         index = ui->tableView_viewForm->model()->index(i,3);
         dataset = ui->tableView_viewForm->model()->data(index);
@@ -239,7 +257,15 @@ void viewForm::on_pushButton_viewForm_exel_clicked()
         //place
         index = ui->tableView_viewForm->model()->index(i,6);
         dataset = ui->tableView_viewForm->model()->data(index);
-        place = dataset.toString();
+        placeCode = dataset.toInt();
+
+        switch (placeCode) {
+        case 0:
+            place = "Центр";
+            break;
+        default:
+            break;
+        }
 
         //prepare and write string to CSV format
         tableRowString +=npp;

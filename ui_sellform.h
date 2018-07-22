@@ -74,7 +74,6 @@ public:
 
         comboBox_sellForm_place = new QComboBox(sellForm);
         comboBox_sellForm_place->addItem(QString());
-        comboBox_sellForm_place->addItem(QString());
         comboBox_sellForm_place->setObjectName(QStringLiteral("comboBox_sellForm_place"));
 
         horizontalLayout->addWidget(comboBox_sellForm_place);
@@ -144,7 +143,6 @@ public:
         lineEdit_sellForm_serarch->setPlaceholderText(QApplication::translate("sellForm", "\320\237\320\276\321\207\320\275\321\226\321\202\321\214 \320\262\320\262\320\276\320\264\320\270\321\202\320\270 \320\275\320\260\320\267\320\262\321\203", nullptr));
         pushButton_sellForm_search->setText(QApplication::translate("sellForm", "\320\224\320\276\320\264\320\260\321\202\320\270", nullptr));
         comboBox_sellForm_place->setItemText(0, QApplication::translate("sellForm", "\320\246\320\265\320\275\321\202\321\200", nullptr));
-        comboBox_sellForm_place->setItemText(1, QApplication::translate("sellForm", "\320\241\320\276\320\275\320\265\321\207\320\272\320\276", nullptr));
 
         QTableWidgetItem *___qtablewidgetitem = tableWidget_sellForm_table->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("sellForm", "\320\235\320\260\320\267\320\262\320\260", nullptr));
