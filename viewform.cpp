@@ -25,7 +25,12 @@ viewForm::viewForm(QWidget *parent) :
     //with this attribute all is OK
     setAttribute(Qt::WA_DeleteOnClose);
     //loading view on start
-    if(!getContent()){
+
+    QString f = "";
+    if(ui->checkBox_viewForm_nullNumber->isChecked()){
+        f = "number > 0.0";
+    }
+    if(!getContent(f)){
         QMessageBox::critical(0, "Error", "Неможливо отримати вміст");
     }
     //catching 'ENTER key pressed' in search line
@@ -66,7 +71,7 @@ bool viewForm::getContent(QString f){
     model->select();
     //denied record to DB automaticly
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    model->
+    //model->
     //model to table
     ui->tableView_viewForm->setModel(model);
     //header to window size
@@ -106,10 +111,10 @@ void viewForm::on_pushButton_viewform_search_clicked()
         case 0:
             break;
         case 1:
-            //sph += "place = 0 AND ";
+            //sph += " AND place = 0 AND ";
             break;
         case 2:
-            //sph += "place = 1 AND ";
+            //sph += " AND place = 1 AND ";
             break;
         default:
             break;
@@ -170,7 +175,18 @@ void viewForm::on_pushButton_viewform_search_clicked()
         default:
             break;
         }
+
+        if(ui->checkBox_viewForm_nullNumber->isChecked()){
+            sph+="AND number > 0.0 ";
+        }
+
     }
+    else{
+        if(ui->checkBox_viewForm_nullNumber->isChecked()){
+            sph+=" number > 0.0 ";
+        }
+    }
+
     //and finally executing query with filter
     getContent(sph);
 

@@ -1,5 +1,6 @@
 #include "additemsform.h"
 #include "ui_additemsform.h"
+#include "yascompleter.h"
 #include <QMessageBox>
 #include <QString>
 #include <QObject>
@@ -11,6 +12,7 @@
 #include <QDebug>
 #include <QFlags>
 #include <QtSql>
+#include <QLineEdit>
 
 
 /*      SOME STUFF FOR TESTING
@@ -47,7 +49,7 @@ void addItemsForm::recalculate(int row){
     redAlert.setStyle(Qt::Dense4Pattern);
     redAlert.setColor("red");
     //loadinf data and calculating
-    double number =(ui->tableWidget_additemsform_table->item(row, 1)->text()).toDouble();
+    double number =(ui->tableWidget_additemsform_table->item(row, 1)->text()).replace(",", ".").toDouble();
     double buyPrice = (ui->tableWidget_additemsform_table->item(row, 3)->text().replace(",", ".")).toDouble();
     double sellPrice = (ui->tableWidget_additemsform_table->item(row, 4)->text().replace(",", ".")).toDouble();
     double profit = 0.0;
@@ -77,6 +79,36 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     QTableWidgetItem *place = new QTableWidgetItem;
     QTableWidgetItem *profit = new QTableWidgetItem;
 
+
+
+
+    QSqlDatabase db = QSqlDatabase::database("add_connection");
+    //check if DB is alive
+    if (!db.isOpen()){
+        if(!db.open()){
+            QMessageBox::critical(0, "Помилка БД", db.lastError().text());
+        }
+    }
+    YAScompleter *completer = new YAScompleter(this);
+    QSqlTableModel *cModel = new QSqlTableModel(this, db);
+
+    //Model is SQL model of table in DB
+       //setting table to model
+    cModel->setTable("stuff");
+
+    //select query
+    cModel->select();
+    //denied record to DB automaticly
+    cModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+
+    //binding completer with model
+    completer->setModel(cModel);
+    completer->setCompletionColumn(1);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    completer->setFilterMode(Qt::MatchContains);
+
+
+
     //for add row next after the curent
     int curRow = ui->tableWidget_additemsform_table->rowCount();
 
@@ -90,6 +122,13 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     ui->tableWidget_additemsform_table->setItem(curRow, 4, sellprice);
     ui->tableWidget_additemsform_table->setItem(curRow, 5, place);
     ui->tableWidget_additemsform_table->setItem(curRow, 6, profit);
+
+    QLineEdit *tLineEdit = new QLineEdit;
+    tLineEdit->
+    tLineEdit->setCompleter(completer);
+    ui->tableWidget_additemsform_table->setCellWidget(curRow, 0, tLineEdit);
+
+
     //setting unitbox to cell "units"
     QComboBox *unitBox = new QComboBox;
     unitBox->insertItem(0, "Пак.");
@@ -102,6 +141,8 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     //placeBox->insertItem(1, "Сонечко");
     placeBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     ui->tableWidget_additemsform_table->setCellWidget(curRow,5,placeBox);
+
+
 
     //setting profit cell uneditable
     ui->tableWidget_additemsform_table->item(curRow,6)->setFlags((ui->tableWidget_additemsform_table->item(curRow,6)->flags()) & ~Qt::ItemIsEditable);

@@ -91,6 +91,16 @@
           </spacer>
          </item>
          <item>
+          <widget class="QCheckBox" name="checkBox_viewForm_nullNumber">
+           <property name="text">
+            <string>Лише наявні</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QComboBox" name="comboBox_viewForm_place">
            <item>
             <property name="text">

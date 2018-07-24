@@ -27,6 +27,7 @@ sellForm::sellForm(QWidget *parent) :
     QString filter = "place = '";
     filter += ui->comboBox_sellForm_place->currentText();
     filter += "'";
+    filter += " AND number > 0.0";
 
     //setting table to model
     model->setTable("stuff");
