@@ -31,7 +31,8 @@ SOURCES += \
     bdsettings.cpp \
     viewform.cpp \
     pcore.cpp \
-    sellform.cpp
+    sellform.cpp \
+    delegates.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -40,7 +41,8 @@ HEADERS += \
     viewform.h \
     pcore.h \
     sellform.h \
-    yascompleter.h
+    yascompleter.h \
+    delegates.h
 
 FORMS += \
         mainwindow.ui \

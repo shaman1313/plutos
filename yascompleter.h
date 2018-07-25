@@ -3,6 +3,10 @@
 
 #include <QCompleter>
 
+//Переведите кодировку в UTF-8
+
+
+
 class YAScompleter: public QCompleter{
     Q_OBJECT
 public:

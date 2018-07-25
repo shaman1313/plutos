@@ -7,6 +7,9 @@
 #include <QDebug>
 #include <QObject>
 
+//Переведите кодировку в UTF-8
+
+
 sellForm::sellForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::sellForm)

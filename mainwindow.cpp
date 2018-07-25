@@ -9,6 +9,13 @@
 #include <QObject>
 #include <QString>
 
+
+
+//Переведите кодировку в UTF-8
+
+
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)

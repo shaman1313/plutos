@@ -4,6 +4,10 @@
 #include <QWidget>
 #include <QtSql>
 
+//Переведите кодировку в UTF-8
+
+
+
 namespace Ui {
 class viewForm;
 }

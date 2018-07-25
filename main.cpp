@@ -3,6 +3,9 @@
 #include <QApplication>
 #include <QTextCodec>
 
+
+//Переведите кодировку в UTF-8
+
 int main(int argc, char *argv[])
 {
     QTextCodec* codec = QTextCodec::codecForName("UTF-8");

@@ -3,7 +3,9 @@
 
 #include <QWidget>
 #include <string>
+#include <QSqlTableModel>
 
+//Переведите кодировку в UTF-8
 
 namespace Ui {
 class addItemsForm;
@@ -24,7 +26,8 @@ private slots:
     void on_pushButton_additemsform_cancel_clicked();
 
     void on_pushButton_additemsform_delete_clicked();
-
+    void catchCompleterIndex(int);
+    void loadAutocompleteData(int, int);
     void recalculate(int);
 
     void on_pushButton_additemsform_ok_clicked();
@@ -32,6 +35,8 @@ private slots:
 
 private:
     Ui::addItemsForm *ui;
+    int complRowIndex;
+    QSqlTableModel * pModel = nullptr;
 };
 
 #endif // ADDITEMSFORM_H

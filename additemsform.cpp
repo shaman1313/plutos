@@ -1,6 +1,7 @@
 #include "additemsform.h"
 #include "ui_additemsform.h"
 #include "yascompleter.h"
+#include "delegates.h"
 #include <QMessageBox>
 #include <QString>
 #include <QObject>
@@ -17,6 +18,9 @@
 
 /*      SOME STUFF FOR TESTING
 
+//Переведите кодировку в UTF-8
+
+
 QMessageBox::information(0,"Connection is success","All is good. Just close this window");
 
 */
@@ -27,6 +31,7 @@ addItemsForm::addItemsForm(QWidget *parent) :
     ui(new Ui::addItemsForm)
 {
     ui->setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose);
 }
 addItemsForm::~addItemsForm()
 {
@@ -53,9 +58,16 @@ void addItemsForm::recalculate(int row){
     double buyPrice = (ui->tableWidget_additemsform_table->item(row, 3)->text().replace(",", ".")).toDouble();
     double sellPrice = (ui->tableWidget_additemsform_table->item(row, 4)->text().replace(",", ".")).toDouble();
     double profit = 0.0;
-
+    QString profitStr;
+    int profitPers;
     profit = (sellPrice - buyPrice)*number;
-    ui->tableWidget_additemsform_table->item(row, 6)->setText(QString::number(profit));
+    profitPers = int(((sellPrice - buyPrice)/buyPrice)*100);
+    profitStr = QString::number(profit);
+    profitStr += " (";
+    profitStr += QString::number(profitPers);
+    profitStr += " %)";
+
+    ui->tableWidget_additemsform_table->item(row, 6)->setText(profitStr);
     if(profit<=0.0){
         ui->tableWidget_additemsform_table->item(row,6)->setBackground(redAlert);
     }
@@ -89,11 +101,12 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
             QMessageBox::critical(0, "Помилка БД", db.lastError().text());
         }
     }
-    YAScompleter *completer = new YAScompleter(this);
+//    YAScompleter *completer = new YAScompleter(this);
     QSqlTableModel *cModel = new QSqlTableModel(this, db);
-
-    //Model is SQL model of table in DB
-       //setting table to model
+    this->pModel = cModel;
+    this->complRowIndex = -1;
+//    //Model is SQL model of table in DB
+//       //setting table to model
     cModel->setTable("stuff");
 
     //select query
@@ -101,11 +114,11 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     //denied record to DB automaticly
     cModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
 
-    //binding completer with model
-    completer->setModel(cModel);
-    completer->setCompletionColumn(1);
-    completer->setCaseSensitivity(Qt::CaseInsensitive);
-    completer->setFilterMode(Qt::MatchContains);
+//    //binding completer with model
+//    completer->setModel(cModel);
+//    completer->setCompletionColumn(1);
+//    completer->setCaseSensitivity(Qt::CaseInsensitive);
+//    completer->setFilterMode(Qt::MatchContains);
 
 
 
@@ -123,10 +136,14 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     ui->tableWidget_additemsform_table->setItem(curRow, 5, place);
     ui->tableWidget_additemsform_table->setItem(curRow, 6, profit);
 
-    QLineEdit *tLineEdit = new QLineEdit;
-    tLineEdit->
-    tLineEdit->setCompleter(completer);
-    ui->tableWidget_additemsform_table->setCellWidget(curRow, 0, tLineEdit);
+//    QLineEdit *tLineEdit = new QLineEdit;
+//    tLineEdit->setFrame(false);
+//    tLineEdit->setCompleter(completer);
+//    ui->tableWidget_additemsform_table->setCellWidget(curRow, 0, tLineEdit);
+
+
+    LineEditDelegate *tLineEdit = new LineEditDelegate;
+    ui->tableWidget_additemsform_table->setItemDelegateForColumn(0, tLineEdit);
 
 
     //setting unitbox to cell "units"
@@ -148,6 +165,10 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     ui->tableWidget_additemsform_table->item(curRow,6)->setFlags((ui->tableWidget_additemsform_table->item(curRow,6)->flags()) & ~Qt::ItemIsEditable);
     //connecting SIGNAL cellChanged for refreshing profit cell
     connect(ui->tableWidget_additemsform_table, ui->tableWidget_additemsform_table->cellChanged, this, addItemsForm::recalculate);
+    connect(tLineEdit, LineEditDelegate::completeDone, this, catchCompleterIndex);
+    connect(ui->tableWidget_additemsform_table, ui->tableWidget_additemsform_table->cellChanged, this, addItemsForm::loadAutocompleteData);
+
+    //connect(completer, YAScompleter::sendNaturalIndex, this, loadAutocomleteData);
 
 }
 
@@ -157,6 +178,41 @@ void addItemsForm::on_pushButton_additemsform_cancel_clicked()
 {
     QWidget::close();
 }
+
+void addItemsForm::catchCompleterIndex(int row){
+    this->complRowIndex = row;
+}
+
+
+void addItemsForm::loadAutocompleteData(int row, int col){
+
+    if (col!=0 || ui->tableWidget_additemsform_table->item(row, 0)==0 || this->complRowIndex<0){
+        return;
+    }
+
+    QModelIndex index;
+    QVariant dataset;
+    QComboBox *ubox = new QComboBox;
+    int rowInd = this->complRowIndex;
+
+    index = this->pModel->index(rowInd, 5);
+    dataset = this->pModel->data(index);
+    ubox = qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row, 2));
+    ubox->setCurrentIndex(dataset.toInt());
+    ui->tableWidget_additemsform_table->setCellWidget(row, 2, ubox);
+
+    index = this->pModel->index(rowInd, 3);
+    dataset = this->pModel->data(index);
+    ui->tableWidget_additemsform_table->item(row, 3)->setData(0, dataset);
+
+    index = this->pModel->index(rowInd, 4);
+    dataset = this->pModel->data(index);
+    ui->tableWidget_additemsform_table->item(row, 4)->setData(0, dataset);
+
+    this->complRowIndex = -1;
+}
+
+
 
 //deleting selected row
 void addItemsForm::on_pushButton_additemsform_delete_clicked()
@@ -194,15 +250,19 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
     double sellIt;
     QComboBox *ubox = new QComboBox;
     QComboBox *pbox = new QComboBox;
+    QLineEdit *nameLine = new QLineEdit;
     //query to DB
     QSqlQuery query (db);
     bool success = true;
     //main loop to read row by row in a table
     for (int row = maxRow-1; row>=0; row--){
         //loading data from table
-        nameIt = ui->tableWidget_additemsform_table->item(row, 0)->text();
+        nameLine = qobject_cast<QLineEdit*>(ui->tableWidget_additemsform_table->cellWidget(row, 0));
+        nameIt = nameLine->text();
+
         numIt = ui->tableWidget_additemsform_table->item(row, 1)->text().replace(",", ".").toDouble();
-        ubox = qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row,2)); //I don`t know WTF, this is advice from StackOverflow
+
+        ubox = qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row,2)); //It is a TYPE converting
         unitIt = ubox->currentIndex();
 
         pbox = qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row,5));

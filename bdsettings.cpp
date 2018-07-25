@@ -1,6 +1,7 @@
 #include "bdsettings.h"
 #include "ui_bdsettings.h"
 
+//Переведите кодировку в UTF-8
 
 BDsettings::BDsettings(QWidget *parent) :
     QWidget(parent),

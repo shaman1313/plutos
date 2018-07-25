@@ -13,6 +13,8 @@
 #include <QFile>
 #include <QFileDialog>
 
+//Переведите кодировку в UTF-8
+
 
 viewForm::viewForm(QWidget *parent) :
     QWidget(parent),

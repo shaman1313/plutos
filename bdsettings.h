@@ -3,6 +3,9 @@
 
 #include <QWidget>
 
+//Переведите кодировку в UTF-8
+
+
 namespace Ui {
 class BDsettings;
 }
