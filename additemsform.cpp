@@ -250,15 +250,41 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
     double sellIt;
     QComboBox *ubox = new QComboBox;
     QComboBox *pbox = new QComboBox;
-    QLineEdit *nameLine = new QLineEdit;
+
     //query to DB
     QSqlQuery query (db);
     bool success = true;
+
+    //Model is SQL model of table in DB
+    QSqlTableModel *addModel = new QSqlTableModel(this, db);
+    QString f = "";
+    QModelIndex index;
+    QVariant dataset;
+    double lastNumber;
+    double lastBuyprice;
+
+
+
+    //setting table to model
+    addModel->setTable("stuff");
+
+    //denied record to DB automaticly
+    addModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+
+
+
+
     //main loop to read row by row in a table
     for (int row = maxRow-1; row>=0; row--){
         //loading data from table
-        nameLine = qobject_cast<QLineEdit*>(ui->tableWidget_additemsform_table->cellWidget(row, 0));
-        nameIt = nameLine->text();
+        index = ui->tableWidget_additemsform_table->model()->index(row, 0);
+        nameIt = ui->tableWidget_additemsform_table->model()->data(index).toString() ;
+
+        if (nameIt.isEmpty()){
+            QMessageBox::warning(0, "Увага!", "Поле 'НАЗВА' не повинно бути порожнім!");
+            success = false;
+            continue;
+        }
 
         numIt = ui->tableWidget_additemsform_table->item(row, 1)->text().replace(",", ".").toDouble();
 
@@ -270,23 +296,168 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
         buypIt = ui->tableWidget_additemsform_table->item(row, 3)->text().replace(",", ".").toDouble();
         sellIt = ui->tableWidget_additemsform_table->item(row, 4)->text().replace(",", ".").toDouble();
 
-        //it`s for adding values to query by names
-        query.prepare("INSERT INTO stuff (name, number,units, buyprice, sellprice, place) VALUES (:name, :number, :units, :buyprice, :sellprice, :place);");
-        //and adding values
-        query.bindValue(":name", nameIt.toUtf8());
-        query.bindValue(":number", numIt);
-        query.bindValue(":units", unitIt);
-        query.bindValue(":buyprice", buypIt);
-        query.bindValue(":sellprice", sellIt);
-        query.bindValue(":place", placeIt);
-        //execution of query and check for errors
 
-        if(!query.exec()){
-            success = false;
-            continue;
+        f+= "name = '";
+        f+= nameIt;
+        f+= "'";
+
+        //filter for model
+        //filter is statement 'WHERE' without word where
+        //'name LIKE %abc%' for example
+        if(!f.isEmpty()){
+            addModel->setFilter(f);
+            addModel->select();
         }
-        //remove row after success operation
-        ui->tableWidget_additemsform_table->removeRow(row);
+
+        int numRow = addModel->rowCount();
+
+
+        switch (numRow) {
+        case 0:
+            //it`s for adding values to query by names
+            query.prepare("INSERT INTO stuff (name, number,units, buyprice, sellprice, place) VALUES (:name, :number, :units, :buyprice, :sellprice, :place);");
+            //and adding values
+            query.bindValue(":name", nameIt.toUtf8());
+            query.bindValue(":number", numIt);
+            query.bindValue(":units", unitIt);
+            query.bindValue(":buyprice", buypIt);
+            query.bindValue(":sellprice", sellIt);
+            query.bindValue(":place", placeIt);
+            //execution of query and check for errors
+            //qDebug() << query.boundValues();
+            if(!query.exec()){
+                success = false;
+                continue;
+            }
+            //remove row after success operation
+            ui->tableWidget_additemsform_table->removeRow(row);
+            break;
+//        case 1:
+
+//            index = addModel->index(0, 2);
+//            dataset = addModel->data(index);
+//            lastNumber = dataset.toDouble();
+//            if(lastNumber == 0.0){
+//                query.prepare("UPDATE stuff SET number=:number, units=:units, buyprice=:buyprice, sellprice=:sellprice, place=:place WHERE name=:name;");
+//                //and adding values
+//                query.bindValue(":name", nameIt.toUtf8());
+//                query.bindValue(":number", numIt);
+//                query.bindValue(":units", unitIt);
+//                query.bindValue(":buyprice", buypIt);
+//                query.bindValue(":sellprice", sellIt);
+//                query.bindValue(":place", placeIt);
+//                //execution of query and check for errors
+//                //qDebug() << query.boundValues();
+//                if(!query.exec()){
+//                    success = false;
+//                    continue;
+//                }
+//                //remove row after success operation
+//                ui->tableWidget_additemsform_table->removeRow(row);
+//            }
+//            else{
+//                index = addModel->index(0, 3);
+//                dataset = addModel->data(index);
+//                lastBuyprice = dataset.toDouble();
+//                if(lastBuyprice == buypIt){
+//                    query.prepare("UPDATE stuff SET number=:number, units=:units, buyprice=:buyprice, sellprice=:sellprice, place=:place WHERE name=:name;");
+//                    //and adding values
+//                    query.bindValue(":name", nameIt.toUtf8());
+//                    query.bindValue(":number", numIt+lastNumber);
+//                    query.bindValue(":units", unitIt);
+//                    query.bindValue(":buyprice", buypIt);
+//                    query.bindValue(":sellprice", sellIt);
+//                    query.bindValue(":place", placeIt);
+//                    //execution of query and check for errors
+//                    //qDebug() << query.boundValues();
+//                    if(!query.exec()){
+//                        success = false;
+//                        continue;
+//                    }
+//                    //remove row after success operation
+//                    ui->tableWidget_additemsform_table->removeRow(row);
+//                }
+//                else{
+//                    //it`s for adding values to query by names
+//                    query.prepare("INSERT INTO stuff (name, number,units, buyprice, sellprice, place) VALUES (:name, :number, :units, :buyprice, :sellprice, :place);");
+//                    //and adding values
+//                    query.bindValue(":name", nameIt.toUtf8());
+//                    query.bindValue(":number", numIt);
+//                    query.bindValue(":units", unitIt);
+//                    query.bindValue(":buyprice", buypIt);
+//                    query.bindValue(":sellprice", sellIt);
+//                    query.bindValue(":place", placeIt);
+//                    //execution of query and check for errors
+//                    //qDebug() << query.boundValues();
+//                    if(!query.exec()){
+//                        success = false;
+//                        continue;
+//                    }
+//                    //remove row after success operation
+//                    ui->tableWidget_additemsform_table->removeRow(row);
+//                }
+//            }
+//            break;
+
+        default:
+
+            for(int i = 0; i<numRow; i++ ){
+                index = addModel->index(i, 3);
+                dataset = addModel->data(index);
+                lastBuyprice = dataset.toDouble();
+                if (lastBuyprice == buypIt){
+                    index = addModel->index(i, 2);
+                    dataset = addModel->data(index);
+                    lastNumber = dataset.toDouble();
+
+
+                    query.prepare("UPDATE stuff SET number=:number, units=:units, buyprice=:buyprice, sellprice=:sellprice, place=:place WHERE name=:name;");
+                    //and adding values
+                    query.bindValue(":name", nameIt.toUtf8());
+                    query.bindValue(":number", numIt+lastNumber);
+                    query.bindValue(":units", unitIt);
+                    query.bindValue(":buyprice", buypIt);
+                    query.bindValue(":sellprice", sellIt);
+                    query.bindValue(":place", placeIt);
+                    //execution of query and check for errors
+                    //qDebug() << query.boundValues();
+                    if(!query.exec()){
+                        success = false;
+                        break;
+                    }
+                    //remove row after success operation
+                    ui->tableWidget_additemsform_table->removeRow(row);
+                    break;
+                }
+                else{
+                    if(i == numRow-1){
+                        //it`s for adding values to query by names
+                        query.prepare("INSERT INTO stuff (name, number,units, buyprice, sellprice, place) VALUES (:name, :number, :units, :buyprice, :sellprice, :place);");
+                        //and adding values
+                        query.bindValue(":name", nameIt.toUtf8());
+                        query.bindValue(":number", numIt);
+                        query.bindValue(":units", unitIt);
+                        query.bindValue(":buyprice", buypIt);
+                        query.bindValue(":sellprice", sellIt);
+                        query.bindValue(":place", placeIt);
+                        //execution of query and check for errors
+                        //qDebug() << query.boundValues();
+                        if(!query.exec()){
+                            success = false;
+                            break;
+                        }
+                        //remove row after success operation
+                        ui->tableWidget_additemsform_table->removeRow(row);
+                    }
+                    continue;
+                }
+            }
+
+            break;
+        }
+
+
+
     }
 
     if (!success){
