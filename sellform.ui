@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Продаж товару</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="res.qrc">
+    <normaloff>:/new/prefix1/ico/res/drawable-xxxhdpi/round_monetization_on_black_18.png</normaloff>:/new/prefix1/ico/res/drawable-xxxhdpi/round_monetization_on_black_18.png</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_4">
    <item>
@@ -140,6 +144,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>

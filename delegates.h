@@ -5,6 +5,9 @@
 #include <QStyledItemDelegate>
 #include <QCompleter>
 
+//this is delegate for cell in table with autocomplete from DB
+
+
 class LineEditDelegate : public QStyledItemDelegate
 {
     Q_OBJECT

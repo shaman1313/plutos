@@ -1,5 +1,16 @@
 <RCC>
     <qresource prefix="/new/prefix1">
         <file>ico/exel_256x256.png</file>
+        <file>ico/res/drawable-xxxhdpi/outline_add_black_24.png</file>
+        <file>ico/res/drawable-xxxhdpi/outline_attach_money_black_24.png</file>
+        <file>ico/res/drawable-xxxhdpi/outline_swap_horiz_black_24.png</file>
+        <file>ico/res/drawable-xxxhdpi/outline_youtube_searched_for_black_24.png</file>
+        <file>ico/res/drawable-xxxhdpi/outline_timeline_black_24.png</file>
+        <file>ico/res/drawable-xxxhdpi/outline_brightness_low_black_18.png</file>
+        <file>ico/res/drawable-xxxhdpi/outline_storage_black_24.png</file>
+        <file>ico/res/drawable-xxxhdpi/round_monetization_on_black_18.png</file>
+        <file>ico/res/drawable-xxxhdpi/round_monetization_on_black_24.png</file>
+        <file>ico/res/drawable-xxxhdpi/round_monetization_on_black_36.png</file>
+        <file>ico/res/drawable-xxxhdpi/round_monetization_on_black_48.png</file>
     </qresource>
 </RCC>

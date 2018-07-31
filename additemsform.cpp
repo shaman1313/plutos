@@ -49,7 +49,7 @@ void addItemsForm::recalculate(int row){
     {
         return;
     }
-
+    //if profit will be 0 ore less, cell will paint in red color
     QBrush redAlert;
     redAlert.setStyle(Qt::Dense4Pattern);
     redAlert.setColor("red");
@@ -61,12 +61,13 @@ void addItemsForm::recalculate(int row){
     QString profitStr;
     int profitPers;
     profit = (sellPrice - buyPrice)*number;
+    //to show percentage in profit
     profitPers = int(((sellPrice - buyPrice)/buyPrice)*100);
     profitStr = QString::number(profit);
     profitStr += " (";
     profitStr += QString::number(profitPers);
     profitStr += " %)";
-
+    //colorise profit cell
     ui->tableWidget_additemsform_table->item(row, 6)->setText(profitStr);
     if(profit<=0.0){
         ui->tableWidget_additemsform_table->item(row,6)->setBackground(redAlert);
@@ -101,7 +102,7 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
             QMessageBox::critical(0, "Помилка БД", db.lastError().text());
         }
     }
-//    YAScompleter *completer = new YAScompleter(this);
+
     QSqlTableModel *cModel = new QSqlTableModel(this, db);
     this->pModel = cModel;
     this->complRowIndex = -1;
@@ -113,13 +114,6 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     cModel->select();
     //denied record to DB automaticly
     cModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-
-//    //binding completer with model
-//    completer->setModel(cModel);
-//    completer->setCompletionColumn(1);
-//    completer->setCaseSensitivity(Qt::CaseInsensitive);
-//    completer->setFilterMode(Qt::MatchContains);
-
 
 
     //for add row next after the curent
@@ -135,13 +129,8 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     ui->tableWidget_additemsform_table->setItem(curRow, 4, sellprice);
     ui->tableWidget_additemsform_table->setItem(curRow, 5, place);
     ui->tableWidget_additemsform_table->setItem(curRow, 6, profit);
-
-//    QLineEdit *tLineEdit = new QLineEdit;
-//    tLineEdit->setFrame(false);
-//    tLineEdit->setCompleter(completer);
-//    ui->tableWidget_additemsform_table->setCellWidget(curRow, 0, tLineEdit);
-
-
+    //creating the delegate for table cell (QLineEdit)
+    //and setting it to cell
     LineEditDelegate *tLineEdit = new LineEditDelegate;
     ui->tableWidget_additemsform_table->setItemDelegateForColumn(0, tLineEdit);
 
@@ -152,6 +141,7 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     unitBox->insertItem(1, "Кг.");
     unitBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     ui->tableWidget_additemsform_table->setCellWidget(curRow,2,unitBox);
+
     //setting placebox to cell "place"
     QComboBox *placeBox = new QComboBox;
     placeBox->insertItem(0, "Центр");
@@ -165,10 +155,11 @@ void addItemsForm::on_pushButton_additemsform_add_clicked()
     ui->tableWidget_additemsform_table->item(curRow,6)->setFlags((ui->tableWidget_additemsform_table->item(curRow,6)->flags()) & ~Qt::ItemIsEditable);
     //connecting SIGNAL cellChanged for refreshing profit cell
     connect(ui->tableWidget_additemsform_table, ui->tableWidget_additemsform_table->cellChanged, this, addItemsForm::recalculate);
+    //thos SIGNAL for catching autocompleter index from autocompleter model
+    //by this index we can load data from model but in another cells, rather autocomplete column
     connect(tLineEdit, LineEditDelegate::completeDone, this, catchCompleterIndex);
+    //and when user choised record from autocompleter, we load data from other fields of this record
     connect(ui->tableWidget_additemsform_table, ui->tableWidget_additemsform_table->cellChanged, this, addItemsForm::loadAutocompleteData);
-
-    //connect(completer, YAScompleter::sendNaturalIndex, this, loadAutocomleteData);
 
 }
 
@@ -178,14 +169,15 @@ void addItemsForm::on_pushButton_additemsform_cancel_clicked()
 {
     QWidget::close();
 }
-
+//this is index (row index) of model, were autocompleter find record
+//we use this index in loadAutocomplete Data
 void addItemsForm::catchCompleterIndex(int row){
     this->complRowIndex = row;
 }
 
-
+//load data from autocompleter model
 void addItemsForm::loadAutocompleteData(int row, int col){
-
+    //if cell 'name' did`nt changed or autocomplete index not valid - do nothing
     if (col!=0 || ui->tableWidget_additemsform_table->item(row, 0)==0 || this->complRowIndex<0){
         return;
     }
@@ -194,7 +186,7 @@ void addItemsForm::loadAutocompleteData(int row, int col){
     QVariant dataset;
     QComboBox *ubox = new QComboBox;
     int rowInd = this->complRowIndex;
-
+    //load data: units, buy price and sell price
     index = this->pModel->index(rowInd, 5);
     dataset = this->pModel->data(index);
     ubox = qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row, 2));
@@ -208,7 +200,7 @@ void addItemsForm::loadAutocompleteData(int row, int col){
     index = this->pModel->index(rowInd, 4);
     dataset = this->pModel->data(index);
     ui->tableWidget_additemsform_table->item(row, 4)->setData(0, dataset);
-
+    //invalidation of autocomplete index
     this->complRowIndex = -1;
 }
 
@@ -257,7 +249,7 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
 
     //Model is SQL model of table in DB
     QSqlTableModel *addModel = new QSqlTableModel(this, db);
-    QString f = "";
+    QString f = ""; //filter for model
     QModelIndex index;
     QVariant dataset;
     double lastNumber;
@@ -277,6 +269,7 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
     //main loop to read row by row in a table
     for (int row = maxRow-1; row>=0; row--){
         //loading data from table
+        //name
         index = ui->tableWidget_additemsform_table->model()->index(row, 0);
         nameIt = ui->tableWidget_additemsform_table->model()->data(index).toString() ;
 
@@ -285,18 +278,19 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
             success = false;
             continue;
         }
-
+        //number
         numIt = ui->tableWidget_additemsform_table->item(row, 1)->text().replace(",", ".").toDouble();
-
+        //units
         ubox = qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row,2)); //It is a TYPE converting
         unitIt = ubox->currentIndex();
-
+        //place
         pbox = qobject_cast<QComboBox*>(ui->tableWidget_additemsform_table->cellWidget(row,5));
         placeIt = pbox->currentIndex();
+        //prices
         buypIt = ui->tableWidget_additemsform_table->item(row, 3)->text().replace(",", ".").toDouble();
         sellIt = ui->tableWidget_additemsform_table->item(row, 4)->text().replace(",", ".").toDouble();
 
-
+        //filter for model by name
         f+= "name = '";
         f+= nameIt;
         f+= "'";
@@ -308,11 +302,11 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
             addModel->setFilter(f);
             addModel->select();
         }
-
+        //check if stuff is in database, and how much records have such name
         int numRow = addModel->rowCount();
 
-
         switch (numRow) {
+        //if stuff is not in DB, we create new record in DB
         case 0:
             //it`s for adding values to query by names
             query.prepare("INSERT INTO stuff (name, number,units, buyprice, sellprice, place) VALUES (:name, :number, :units, :buyprice, :sellprice, :place);");
@@ -332,75 +326,9 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
             //remove row after success operation
             ui->tableWidget_additemsform_table->removeRow(row);
             break;
-//        case 1:
-
-//            index = addModel->index(0, 2);
-//            dataset = addModel->data(index);
-//            lastNumber = dataset.toDouble();
-//            if(lastNumber == 0.0){
-//                query.prepare("UPDATE stuff SET number=:number, units=:units, buyprice=:buyprice, sellprice=:sellprice, place=:place WHERE name=:name;");
-//                //and adding values
-//                query.bindValue(":name", nameIt.toUtf8());
-//                query.bindValue(":number", numIt);
-//                query.bindValue(":units", unitIt);
-//                query.bindValue(":buyprice", buypIt);
-//                query.bindValue(":sellprice", sellIt);
-//                query.bindValue(":place", placeIt);
-//                //execution of query and check for errors
-//                //qDebug() << query.boundValues();
-//                if(!query.exec()){
-//                    success = false;
-//                    continue;
-//                }
-//                //remove row after success operation
-//                ui->tableWidget_additemsform_table->removeRow(row);
-//            }
-//            else{
-//                index = addModel->index(0, 3);
-//                dataset = addModel->data(index);
-//                lastBuyprice = dataset.toDouble();
-//                if(lastBuyprice == buypIt){
-//                    query.prepare("UPDATE stuff SET number=:number, units=:units, buyprice=:buyprice, sellprice=:sellprice, place=:place WHERE name=:name;");
-//                    //and adding values
-//                    query.bindValue(":name", nameIt.toUtf8());
-//                    query.bindValue(":number", numIt+lastNumber);
-//                    query.bindValue(":units", unitIt);
-//                    query.bindValue(":buyprice", buypIt);
-//                    query.bindValue(":sellprice", sellIt);
-//                    query.bindValue(":place", placeIt);
-//                    //execution of query and check for errors
-//                    //qDebug() << query.boundValues();
-//                    if(!query.exec()){
-//                        success = false;
-//                        continue;
-//                    }
-//                    //remove row after success operation
-//                    ui->tableWidget_additemsform_table->removeRow(row);
-//                }
-//                else{
-//                    //it`s for adding values to query by names
-//                    query.prepare("INSERT INTO stuff (name, number,units, buyprice, sellprice, place) VALUES (:name, :number, :units, :buyprice, :sellprice, :place);");
-//                    //and adding values
-//                    query.bindValue(":name", nameIt.toUtf8());
-//                    query.bindValue(":number", numIt);
-//                    query.bindValue(":units", unitIt);
-//                    query.bindValue(":buyprice", buypIt);
-//                    query.bindValue(":sellprice", sellIt);
-//                    query.bindValue(":place", placeIt);
-//                    //execution of query and check for errors
-//                    //qDebug() << query.boundValues();
-//                    if(!query.exec()){
-//                        success = false;
-//                        continue;
-//                    }
-//                    //remove row after success operation
-//                    ui->tableWidget_additemsform_table->removeRow(row);
-//                }
-//            }
-//            break;
-
+        //if stuff(s) in DB
         default:
-
+            //we seek record with equal buyprice and update this record
             for(int i = 0; i<numRow; i++ ){
                 index = addModel->index(i, 3);
                 dataset = addModel->data(index);
@@ -411,7 +339,7 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
                     lastNumber = dataset.toDouble();
 
 
-                    query.prepare("UPDATE stuff SET number=:number, units=:units, buyprice=:buyprice, sellprice=:sellprice, place=:place WHERE name=:name;");
+                    query.prepare("UPDATE stuff SET number=:number, units=:units, sellprice=:sellprice, place=:place WHERE name=:name AND buyprice=:buyprice;");
                     //and adding values
                     query.bindValue(":name", nameIt.toUtf8());
                     query.bindValue(":number", numIt+lastNumber);
@@ -429,7 +357,9 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
                     ui->tableWidget_additemsform_table->removeRow(row);
                     break;
                 }
+                //otherwise we create new record in DB
                 else{
+                    //if this is last record with name 'name' we create new record
                     if(i == numRow-1){
                         //it`s for adding values to query by names
                         query.prepare("INSERT INTO stuff (name, number,units, buyprice, sellprice, place) VALUES (:name, :number, :units, :buyprice, :sellprice, :place);");
@@ -448,16 +378,13 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
                         }
                         //remove row after success operation
                         ui->tableWidget_additemsform_table->removeRow(row);
+                        break;
                     }
                     continue;
                 }
             }
-
             break;
         }
-
-
-
     }
 
     if (!success){
