@@ -42,8 +42,8 @@ void MainWindow::on_pushButton_main_entering_clicked()
 //open DB settings
 void MainWindow::on_pushButton_main_BDsettings_clicked()
 {
-    BDsettings *settingsForm = new BDsettings;
-    settingsForm->show();
+//    BDsettings *settingsForm = new BDsettings;
+//    settingsForm->show();
 }
 //adding transactions (selling)
 void MainWindow::on_pushButton_main_extering_clicked()

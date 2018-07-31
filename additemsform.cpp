@@ -382,6 +382,14 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
                     }
                     continue;
                 }
+
+            }
+            query.prepare("UPDATE stuff SET sellprice=:sellprice WHERE name=:name;");
+            query.bindValue(":name", nameIt.toUtf8());
+            query.bindValue(":sellprice", sellIt);
+            if(!query.exec()){
+                success = false;
+                continue;
             }
             break;
         }

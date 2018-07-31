@@ -73,7 +73,11 @@ bool viewForm::getContent(QString f){
     model->select();
     //denied record to DB automaticly
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    //model->
+    model->setHeaderData(1, Qt::Horizontal, "Назва");
+    model->setHeaderData(2, Qt::Horizontal, "Кількість");
+    model->setHeaderData(3, Qt::Horizontal, "Ціна закупки");
+    model->setHeaderData(4, Qt::Horizontal, "Ціна продажу");
+    model->setHeaderData(5, Qt::Horizontal, "Од.виміру");
     //model to table
     ui->tableView_viewForm->setModel(model);
     //header to window size

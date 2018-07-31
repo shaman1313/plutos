@@ -32,7 +32,7 @@
        <item>
         <widget class="QLineEdit" name="lineEdit_sellForm_serarch">
          <property name="toolTip">
-          <string>варпар</string>
+          <string/>
          </property>
          <property name="inputMask">
           <string/>
@@ -98,11 +98,6 @@
          <column>
           <property name="text">
            <string>Всього</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Прибуток</string>
           </property>
          </column>
         </widget>
