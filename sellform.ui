@@ -53,6 +53,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="pushButton__sellForm_delete">
+         <property name="text">
+          <string>Видалити</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -98,6 +105,11 @@
          <column>
           <property name="text">
            <string>Всього</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Прибуток</string>
           </property>
          </column>
         </widget>

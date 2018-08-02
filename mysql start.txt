@@ -3,3 +3,5 @@ create database maindb;
 use maindb;
 create table stuff(ID int not null auto_increment primary key, name varchar(255), number double, buyprice double, sellprice double, units int, place int, shki varchar(255), manufackturer varchar(255), seller varchar(255));
 describe stuff;
+create table action(ID int not null auto_increment primary key, time datetime, type int, name varchar(255), number double, sellprice double, allprice double, profit double);
+describe action;

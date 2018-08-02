@@ -22,8 +22,12 @@ public:
 private slots:
     void on_pushButton_sellform_cancel_clicked();
     void index_of_activated(int);
-    void recalculate(int);
+    void recalculate(int, int);
     void on_pushButton_sellForm_search_clicked();
+    void on_pushButton__sellForm_delete_clicked();
+
+    void on_pushButton_sellform_ok_clicked();
+
 public slots:
 
     void changeFilter();
