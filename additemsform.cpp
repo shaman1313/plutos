@@ -254,7 +254,10 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
     QVariant dataset;
     double lastNumber;
     double lastBuyprice;
-
+    double allprice;
+    int typeOp = 1;
+    QDateTime currentDate = QDateTime::currentDateTime();
+    QString dateTimeStr = currentDate.toString("yyyy-MM-dd hh:mm:ss");
 
 
     //setting table to model
@@ -393,6 +396,21 @@ void addItemsForm::on_pushButton_additemsform_ok_clicked()
             }
             break;
         }
+        allprice = numIt * buypIt;
+        query.prepare("INSERT INTO action (time, type, name, number, sellprice, allprice, profit) "
+                                "VALUES (:time, :type, :name, :number, :sellprice, :allprice, :profit);");
+        query.bindValue(":time", dateTimeStr);
+        query.bindValue(":type", typeOp);
+        query.bindValue(":name", nameIt.toUtf8());
+        query.bindValue(":number", numIt);
+        query.bindValue(":sellprice", buypIt);
+        query.bindValue(":allprice", allprice);
+        query.bindValue(":profit", 0);
+        if(!query.exec()){
+            success = false;
+            continue;
+        }
+
     }
 
     if (!success){

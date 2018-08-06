@@ -309,7 +309,7 @@ void sellForm::on_pushButton_sellform_ok_clicked()
 
 
     for(int row = maxRows-1; row>=0; row--){
-        name = ui->tableWidget_sellForm_table->item(row, 0)->text().toUtf8();
+        name = ui->tableWidget_sellForm_table->item(row, 0)->text();
         number = ui->tableWidget_sellForm_table->item(row, 1)->text().replace(",", ".").toDouble();
         sellprise = ui->tableWidget_sellForm_table->item(row, 2)->text().replace(",", ".").toDouble();
         allprice = ui->tableWidget_sellForm_table->item(row, 3)->text().replace(",", ".").toDouble();
@@ -320,7 +320,7 @@ void sellForm::on_pushButton_sellform_ok_clicked()
                                 "VALUES (:time, :type, :name, :number, :sellprice, :allprice, :profit);");
         query.bindValue(":time", dateTimeStr);
         query.bindValue(":type", typeOp);
-        query.bindValue(":name", name);
+        query.bindValue(":name", name.toUtf8());
         query.bindValue(":number", number);
         query.bindValue(":sellprice", sellprise);
         query.bindValue(":allprice", allprice);
