@@ -5,6 +5,7 @@
 #include "viewform.h"
 #include "pcore.h"
 #include "sellform.h"
+#include "zvit.h"
 #include <QMessageBox>
 #include <QObject>
 #include <QString>
@@ -58,4 +59,10 @@ void MainWindow::on_pushButton_main_view_clicked()
 {
     viewForm *view = new viewForm;
     view->show();
+}
+
+void MainWindow::on_pushButton_main_reports_clicked()
+{
+    zvit *zvitForm = new zvit;
+    zvitForm->show();
 }

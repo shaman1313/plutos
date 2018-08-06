@@ -406,40 +406,12 @@ void sellForm::on_pushButton_sellform_ok_clicked()
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    if (!success){
+        QMessageBox::warning(0, "Увага!", query.lastError().text()+=" \nДеякі записи не було оброблено");
+    }
+    else{
+        QMessageBox::information(0, "Виконано!", "Всі записи оброблено.");
+    }
 
 
 }
