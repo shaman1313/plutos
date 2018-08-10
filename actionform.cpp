@@ -7,6 +7,7 @@
 #include <QFileDialog>
 #include <QTextCodec>
 #include <QTextStream>
+#include <QLineEdit>
 
 actionForm::actionForm(QWidget *parent) :
     QWidget(parent),
@@ -14,6 +15,7 @@ actionForm::actionForm(QWidget *parent) :
 {
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
+
 }
 
 actionForm::~actionForm()
@@ -21,11 +23,27 @@ actionForm::~actionForm()
     delete ui;
 }
 
-void actionForm::build(int opCode, QString begin, QString end, QString name){
+void actionForm::build(int opCode, QString begin, QString end, QString name, bool graph){
     this->opCode = opCode;
     this->beginDate = begin;
     this->endDate = end;
 
+//for grafical visualisation of data frame
+//Project ERROR: Unknown module(s) in QT: charts
+    //in .pro module added
+    //need to install it to Qt
+    QLineEdit *barbieTest = new QLineEdit;
+    QVBoxLayout *graphLayout= new QVBoxLayout();
+
+
+    if (graph){
+
+        graphLayout->addWidget(barbieTest);
+        //ui->verticalLayout_2->addLayout(graphLayout);
+        ui->verticalLayout_2->insertLayout(0,graphLayout);
+
+
+    }
 
     QSqlDatabase db = QSqlDatabase::database("view_connection");
     //check if DB is alive

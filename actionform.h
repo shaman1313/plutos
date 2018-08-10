@@ -14,8 +14,9 @@ class actionForm : public QWidget
 public:
     explicit actionForm(QWidget *parent = 0);
     ~actionForm();
+
 public slots:
-    void build(int, QString, QString, QString);
+    void build(int, QString, QString, QString, bool);
 
 private slots:
     void on_pushButton_actionForm_close_clicked();

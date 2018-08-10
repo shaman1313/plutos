@@ -38,7 +38,8 @@ void zvit::on_pushButton_zvit_build_clicked()
         opCode = 1;
     }
     else{
-        QMessageBox::warning(0, "Óâàãà!", "Âèáåð³òü òèï îïåðàö³¿");
+        QMessageBox::warning(0, "Ð£Ð²Ð°Ð³Ð°!", "Ð’Ð¸Ð±ÐµÑ€Ñ–Ñ‚ÑŒ Ñ‚Ð¸Ð¿ Ð¾Ð¿ÐµÑ€Ð°Ñ†Ñ–Ñ—");
+        return;
     }
 
     QDate beginDate = ui->dateEdit_zvit_begin->date();
@@ -51,7 +52,10 @@ void zvit::on_pushButton_zvit_build_clicked()
 
 
     actionForm *actionF = new actionForm;
+    bool graph = ui->checkBox_graph->isChecked();
+
+
     actionF->show();
     connect(this, startBuildingreport, actionF, actionForm::build);
-    emit startBuildingreport(opCode, beginDateStr, endDateStr, name);
+    emit startBuildingreport(opCode, beginDateStr, endDateStr, name, graph);
 }

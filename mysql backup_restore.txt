@@ -1,0 +1,8 @@
+mysqldump -u username -p database_to_backup > backup_name.sql
+
+
+mysql -u username -p
+CREATE DATABASE database_name;
+exit
+
+mysql -u username -p database_name < backup_name.sql
