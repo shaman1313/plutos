@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QDateEdit>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
@@ -52,6 +53,7 @@ public:
     QSpacerItem *verticalSpacer;
     QHBoxLayout *horizontalLayout_2;
     QCheckBox *checkBox_graph;
+    QComboBox *comboBox_graphType;
     QSpacerItem *horizontalSpacer_3;
     QPushButton *pushButton_zvit_build;
     QPushButton *pushButton_zvit_cancel;
@@ -159,6 +161,15 @@ public:
 
         horizontalLayout_2->addWidget(checkBox_graph);
 
+        comboBox_graphType = new QComboBox(zvit);
+        comboBox_graphType->addItem(QString());
+        comboBox_graphType->addItem(QString());
+        comboBox_graphType->addItem(QString());
+        comboBox_graphType->addItem(QString());
+        comboBox_graphType->setObjectName(QStringLiteral("comboBox_graphType"));
+
+        horizontalLayout_2->addWidget(comboBox_graphType);
+
         horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_2->addItem(horizontalSpacer_3);
@@ -194,6 +205,11 @@ public:
         groupBox_3->setTitle(QApplication::translate("zvit", "\320\224\320\276\320\264\320\260\321\202\320\272\320\276\320\262\321\226 \321\203\320\274\320\276\320\262\320\270", nullptr));
         label_3->setText(QApplication::translate("zvit", "\320\235\320\260\320\267\320\262\320\260 \320\274\321\226\321\201\321\202\320\270\321\202\321\214", nullptr));
         checkBox_graph->setText(QApplication::translate("zvit", "\320\223\321\200\320\260\321\204\321\226\320\272", nullptr));
+        comboBox_graphType->setItemText(0, QApplication::translate("zvit", "\320\220\320\262\321\202\320\276", nullptr));
+        comboBox_graphType->setItemText(1, QApplication::translate("zvit", "\320\237\320\276 \320\264\320\275\321\217\321\205", nullptr));
+        comboBox_graphType->setItemText(2, QApplication::translate("zvit", "\320\237\320\276 \320\274\321\226\321\201\321\217\321\206\321\217\321\205", nullptr));
+        comboBox_graphType->setItemText(3, QApplication::translate("zvit", "\320\237\320\276 \321\200\320\276\320\272\320\260\321\205", nullptr));
+
         pushButton_zvit_build->setText(QApplication::translate("zvit", "\320\237\320\276\320\261\321\203\320\264\321\203\320\262\320\260\321\202\320\270", nullptr));
         pushButton_zvit_cancel->setText(QApplication::translate("zvit", "\320\222\321\226\320\264\320\274\321\226\320\275\320\270\321\202\320\270", nullptr));
     } // retranslateUi

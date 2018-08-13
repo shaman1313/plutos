@@ -149,6 +149,30 @@
       </widget>
      </item>
      <item>
+      <widget class="QComboBox" name="comboBox_graphType">
+       <item>
+        <property name="text">
+         <string>Авто</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>По днях</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>По місяцях</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>По роках</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>

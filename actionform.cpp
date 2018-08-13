@@ -8,6 +8,11 @@
 #include <QTextCodec>
 #include <QTextStream>
 #include <QLineEdit>
+#include <QtCharts/QtCharts>
+
+QT_CHARTS_USE_NAMESPACE
+
+
 
 actionForm::actionForm(QWidget *parent) :
     QWidget(parent),
@@ -23,27 +28,17 @@ actionForm::~actionForm()
     delete ui;
 }
 
-void actionForm::build(int opCode, QString begin, QString end, QString name, bool graph){
+void actionForm::build(int opCode, QString begin, QString end, QString name, bool graph, int graphType){
     this->opCode = opCode;
     this->beginDate = begin;
     this->endDate = end;
+//Перепроэктировать постоение графика, в зависимости от его включенности,
+//от его типа отображения.
+//Считать по категориям нужно отдельно, поскольку граф соотносит значения
+//        из полей набора с полями категорий (поэтому сейчас включается только первое значение), потому категорий нужно столько же
+//        сколько значений в наборах данных
+//Вынести обсчет на граф в отдельный цикл
 
-//for grafical visualisation of data frame
-//Project ERROR: Unknown module(s) in QT: charts
-    //in .pro module added
-    //need to install it to Qt
-    QLineEdit *barbieTest = new QLineEdit;
-    QVBoxLayout *graphLayout= new QVBoxLayout();
-
-
-    if (graph){
-
-        graphLayout->addWidget(barbieTest);
-        //ui->verticalLayout_2->addLayout(graphLayout);
-        ui->verticalLayout_2->insertLayout(0,graphLayout);
-
-
-    }
 
     QSqlDatabase db = QSqlDatabase::database("view_connection");
     //check if DB is alive
@@ -95,17 +90,63 @@ void actionForm::build(int opCode, QString begin, QString end, QString name, boo
     int rowCount = ui->tableView_actionForm_table->model()->rowCount();
     double finalProfit = 0.0;
     double finalPrice = 0.0;
+    double allPr;
     QString allSum = "Всього:";
     QModelIndex index;
     QVariant dataset;
+
+    QChart *chart = new QChart();
+    QBarSet *setProf = new QBarSet("Прибуток");
+    QBarSet *setCred = new QBarSet("Затрати");
+
+    QStringList categories;
+
+
     for (int i=0; i<rowCount; i++){
         index = ui->tableView_actionForm_table->model()->index(i, 6);
         dataset = ui->tableView_actionForm_table->model()->data(index);
         finalPrice += dataset.toDouble();
+        allPr = dataset.toDouble();
         index = ui->tableView_actionForm_table->model()->index(i, 7);
         dataset = ui->tableView_actionForm_table->model()->data(index);
         finalProfit += dataset.toDouble();
+        *setProf << dataset.toDouble();
+        *setCred << allPr - dataset.toDouble();
+
+        index = ui->tableView_actionForm_table->model()->index(i, 1);
+        dataset = ui->tableView_actionForm_table->model()->data(index);
+        categories << dataset.toDate().toString("dd MM yyyy");
+
+
     }
+
+    QStackedBarSeries *series = new QStackedBarSeries();
+
+    series->append(setCred);
+    series->append(setProf);
+    chart->addSeries(series);
+
+    chart->setTitle("Test graph:");
+    chart->setAnimationOptions(QChart::SeriesAnimations);
+
+
+
+    QBarCategoryAxis *axis = new QBarCategoryAxis();
+    axis->append(categories);
+    chart->createDefaultAxes();
+    chart->setAxisX(axis, series);
+
+
+    chart->legend()->setVisible(true);
+    chart->legend()->setAlignment(Qt::AlignBottom);
+
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+
+
+
+
     ui->tableView_actionForm_table->model()->insertRow(rowCount);
     index = ui->tableView_actionForm_table->model()->index(rowCount, 3);
     dataset.setValue(allSum);
@@ -116,6 +157,22 @@ void actionForm::build(int opCode, QString begin, QString end, QString name, boo
     index = ui->tableView_actionForm_table->model()->index(rowCount, 7);
     dataset.setValue(finalProfit);
     ui->tableView_actionForm_table->model()->setData(index, dataset);
+
+
+
+
+
+    QVBoxLayout *graphLayout= new QVBoxLayout();
+
+
+    if (graph){
+
+        graphLayout->addWidget(chartView);
+        //ui->verticalLayout_2->addLayout(graphLayout);
+        ui->verticalLayout_2->insertLayout(0,graphLayout);
+
+
+    }
 
 }
 

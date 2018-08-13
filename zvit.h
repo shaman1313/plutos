@@ -20,7 +20,7 @@ private slots:
 
     void on_pushButton_zvit_build_clicked();
 signals:
-    void startBuildingreport(int, QString, QString, QString, bool);
+    void startBuildingreport(int, QString, QString, QString, bool, int);
 private:
     Ui::zvit *ui;
 };

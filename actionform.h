@@ -16,7 +16,7 @@ public:
     ~actionForm();
 
 public slots:
-    void build(int, QString, QString, QString, bool);
+    void build(int, QString, QString, QString, bool, int);
 
 private slots:
     void on_pushButton_actionForm_close_clicked();

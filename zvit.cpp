@@ -49,7 +49,7 @@ void zvit::on_pushButton_zvit_build_clicked()
 
     QString name = ui->lineEdit_zvit_name->text();
 
-
+    int graphType = ui->comboBox_graphType->currentIndex();
 
     actionForm *actionF = new actionForm;
     bool graph = ui->checkBox_graph->isChecked();
@@ -57,5 +57,5 @@ void zvit::on_pushButton_zvit_build_clicked()
 
     actionF->show();
     connect(this, startBuildingreport, actionF, actionForm::build);
-    emit startBuildingreport(opCode, beginDateStr, endDateStr, name, graph);
+    emit startBuildingreport(opCode, beginDateStr, endDateStr, name, graph, graphType);
 }
