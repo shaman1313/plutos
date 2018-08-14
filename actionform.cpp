@@ -32,13 +32,9 @@ void actionForm::build(int opCode, QString begin, QString end, QString name, boo
     this->opCode = opCode;
     this->beginDate = begin;
     this->endDate = end;
-//Перепроэктировать постоение графика, в зависимости от его включенности,
-//от его типа отображения.
-//Считать по категориям нужно отдельно, поскольку граф соотносит значения
-//        из полей набора с полями категорий (поэтому сейчас включается только первое значение), потому категорий нужно столько же
-//        сколько значений в наборах данных
-//Вынести обсчет на граф в отдельный цикл
-
+    QDate beginDate = QDate::fromString(begin, "yyyy-MM-dd");
+    QDate endDate = QDate::fromString(end, "yyyy-MM-dd");
+    int daysFrame = beginDate.daysTo(endDate);
 
     QSqlDatabase db = QSqlDatabase::database("view_connection");
     //check if DB is alive
@@ -68,6 +64,7 @@ void actionForm::build(int opCode, QString begin, QString end, QString name, boo
     }
 
     model->setFilter(filter);
+    model->setSort(1, Qt::AscendingOrder);
 
     if(!model->select()){
         QMessageBox::critical(0, "Помилка!","Неможливо обробити запит: " + db.lastError().text());
@@ -90,58 +87,152 @@ void actionForm::build(int opCode, QString begin, QString end, QString name, boo
     int rowCount = ui->tableView_actionForm_table->model()->rowCount();
     double finalProfit = 0.0;
     double finalPrice = 0.0;
-    double allPr;
+
     QString allSum = "Всього:";
     QModelIndex index;
     QVariant dataset;
 
-    QChart *chart = new QChart();
-    QBarSet *setProf = new QBarSet("Прибуток");
-    QBarSet *setCred = new QBarSet("Затрати");
 
-    QStringList categories;
 
 
     for (int i=0; i<rowCount; i++){
         index = ui->tableView_actionForm_table->model()->index(i, 6);
         dataset = ui->tableView_actionForm_table->model()->data(index);
         finalPrice += dataset.toDouble();
-        allPr = dataset.toDouble();
+
         index = ui->tableView_actionForm_table->model()->index(i, 7);
         dataset = ui->tableView_actionForm_table->model()->data(index);
         finalProfit += dataset.toDouble();
-        *setProf << dataset.toDouble();
-        *setCred << allPr - dataset.toDouble();
 
-        index = ui->tableView_actionForm_table->model()->index(i, 1);
+    }
+
+    if(graph){
+
+
+        QChart *chart = new QChart();
+        QBarSet *setProf = new QBarSet("Прибуток");
+        QBarSet *setCred = new QBarSet("Затрати");
+
+        QStringList categories;
+
+        QString graphT = "";
+        QString graphName = "";
+        QString tempDate;
+        QString prevDate;
+        double tempAllPr;
+        double tempProf;
+        double allPrAccum = 0.0;
+        double profAccum = 0.0;
+
+        if(this->opCode == 0){
+            graphName = "Продано ";
+        }
+        else{
+            graphName = "Закуплено ";
+        }
+
+        switch (graphType) {
+        case 0:
+
+            if(daysFrame<46 && daysFrame>0){
+                graphT = "dd MM yyyy";
+                graphName += "по днях:";
+            }
+            else if(daysFrame>45 && daysFrame<1080){
+                graphT = "MM yyyy";
+                graphName += " по місяцях:";
+            }
+            else if(daysFrame>1079){
+                graphT = "yyyy";
+                graphName += " по роках:";
+            }
+            break;
+        case 1:
+            graphT = "dd MM yyyy";
+            graphName += "по днях:";
+            break;
+        case 2:
+            graphT = "MM yyyy";
+            graphName += " по місяцях:";
+            break;
+        case 3:
+            graphT = "yyyy";
+            graphName += " по роках:";
+            break;
+        default:
+            break;
+        }
+
+        index = ui->tableView_actionForm_table->model()->index(0, 1);
         dataset = ui->tableView_actionForm_table->model()->data(index);
-        categories << dataset.toDate().toString("dd MM yyyy");
+        prevDate = dataset.toDate().toString(graphT);
+
+        for(int i=0; i<rowCount; i++){
+
+            index = ui->tableView_actionForm_table->model()->index(i, 1);
+            dataset = ui->tableView_actionForm_table->model()->data(index);
+            tempDate = dataset.toDate().toString(graphT);
+
+            index = ui->tableView_actionForm_table->model()->index(i, 6);
+            dataset = ui->tableView_actionForm_table->model()->data(index);
+            tempAllPr = dataset.toDouble();
+
+            index = ui->tableView_actionForm_table->model()->index(i, 7);
+            dataset = ui->tableView_actionForm_table->model()->data(index);
+            tempProf = dataset.toDouble();
+
+            if(tempDate == prevDate){
+                allPrAccum += tempAllPr;
+                profAccum += tempProf;
+            }
+            else{
+                categories << prevDate;
+                prevDate = tempDate;
+                *setProf << profAccum;
+                *setCred << allPrAccum - profAccum;
+                allPrAccum = tempAllPr;
+                profAccum = tempProf;
+            }
+            if (i == rowCount-1){
+                categories << tempDate;
+                *setProf << profAccum;
+                *setCred << allPrAccum - profAccum;
+            }
+        }
+
+
+        QStackedBarSeries *series = new QStackedBarSeries();
+
+        series->append(setCred);
+        series->append(setProf);
+        chart->addSeries(series);
+
+        chart->setTitle(graphName);
+        chart->setAnimationOptions(QChart::SeriesAnimations);
+
+
+
+        QBarCategoryAxis *axis = new QBarCategoryAxis();
+        axis->append(categories);
+        chart->createDefaultAxes();
+        chart->setAxisX(axis, series);
+
+
+        chart->legend()->setVisible(true);
+        chart->legend()->setAlignment(Qt::AlignBottom);
+
+        QChartView *chartView = new QChartView(chart);
+        chartView->setRenderHint(QPainter::Antialiasing);
+
+
+         QVBoxLayout *graphLayout= new QVBoxLayout();
+         graphLayout->addWidget(chartView);
+
+         ui->verticalLayout_2->insertLayout(0,graphLayout);
 
 
     }
 
-    QStackedBarSeries *series = new QStackedBarSeries();
-
-    series->append(setCred);
-    series->append(setProf);
-    chart->addSeries(series);
-
-    chart->setTitle("Test graph:");
-    chart->setAnimationOptions(QChart::SeriesAnimations);
-
-
-
-    QBarCategoryAxis *axis = new QBarCategoryAxis();
-    axis->append(categories);
-    chart->createDefaultAxes();
-    chart->setAxisX(axis, series);
-
-
-    chart->legend()->setVisible(true);
-    chart->legend()->setAlignment(Qt::AlignBottom);
-
-    QChartView *chartView = new QChartView(chart);
-    chartView->setRenderHint(QPainter::Antialiasing);
 
 
 
@@ -162,17 +253,8 @@ void actionForm::build(int opCode, QString begin, QString end, QString name, boo
 
 
 
-    QVBoxLayout *graphLayout= new QVBoxLayout();
 
 
-    if (graph){
-
-        graphLayout->addWidget(chartView);
-        //ui->verticalLayout_2->addLayout(graphLayout);
-        ui->verticalLayout_2->insertLayout(0,graphLayout);
-
-
-    }
 
 }
 
