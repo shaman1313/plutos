@@ -34,7 +34,8 @@ SOURCES += \
     sellform.cpp \
     delegates.cpp \
     zvit.cpp \
-    actionform.cpp
+    actionform.cpp \
+    infoform.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -46,7 +47,8 @@ HEADERS += \
     yascompleter.h \
     delegates.h \
     zvit.h \
-    actionform.h
+    actionform.h \
+    infoform.h
 
 FORMS += \
         mainwindow.ui \
@@ -55,7 +57,8 @@ FORMS += \
     viewform.ui \
     sellform.ui \
     zvit.ui \
-    actionform.ui
+    actionform.ui \
+    infoform.ui
 
 RESOURCES += \
     res.qrc

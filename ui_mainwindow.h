@@ -11,14 +11,16 @@
 
 #include <QtCore/QVariant>
 #include <QtGui/QIcon>
+#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
-#include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -27,6 +29,7 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
+    QAction *action_info;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout_2;
     QHBoxLayout *horizontalLayout;
@@ -46,8 +49,9 @@ public:
     QLabel *label;
     QLabel *label_7;
     QSpacerItem *horizontalSpacer_2;
-    QToolBar *mainToolBar;
     QStatusBar *statusBar;
+    QMenuBar *menuBar;
+    QMenu *menu;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -67,6 +71,9 @@ public:
         MainWindow->setWindowIcon(icon);
         MainWindow->setStyleSheet(QStringLiteral("background-color: rgb(250, 250, 250);"));
         MainWindow->setDockNestingEnabled(false);
+        action_info = new QAction(MainWindow);
+        action_info->setObjectName(QStringLiteral("action_info"));
+        action_info->setCheckable(true);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         horizontalLayout_2 = new QHBoxLayout(centralWidget);
@@ -198,12 +205,18 @@ public:
         horizontalLayout_2->addItem(horizontalSpacer_2);
 
         MainWindow->setCentralWidget(centralWidget);
-        mainToolBar = new QToolBar(MainWindow);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
-        MainWindow->addToolBar(Qt::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
+        menuBar = new QMenuBar(MainWindow);
+        menuBar->setObjectName(QStringLiteral("menuBar"));
+        menuBar->setGeometry(QRect(0, 0, 350, 21));
+        menu = new QMenu(menuBar);
+        menu->setObjectName(QStringLiteral("menu"));
+        MainWindow->setMenuBar(menuBar);
+
+        menuBar->addAction(menu->menuAction());
+        menu->addAction(action_info);
 
         retranslateUi(MainWindow);
 
@@ -213,6 +226,10 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Plutos", nullptr));
+        action_info->setText(QApplication::translate("MainWindow", "\320\237\321\200\320\276 \320\277\321\200\320\276\320\263\321\200\320\260\320\274\321\203", nullptr));
+#ifndef QT_NO_SHORTCUT
+        action_info->setShortcut(QApplication::translate("MainWindow", "Ctrl+I", nullptr));
+#endif // QT_NO_SHORTCUT
         pushButton_main_entering->setText(QString());
         pushButton_main_extering->setText(QString());
         pushButton_main_sending->setText(QString());
@@ -225,6 +242,7 @@ public:
         label_4->setText(QApplication::translate("MainWindow", "\320\237\320\265\321\200\320\265\320\263\320\273\321\217\320\264 \320\221\320\224", nullptr));
         label->setText(QApplication::translate("MainWindow", "\320\227\320\262\321\226\321\202\320\275\321\226\321\201\321\202\321\214", nullptr));
         label_7->setText(QApplication::translate("MainWindow", "\320\235\320\260\320\273\320\260\321\210\321\202\321\203\320\262\320\260\320\275\320\275\321\217 \320\221\320\224", nullptr));
+        menu->setTitle(QApplication::translate("MainWindow", "\320\236\320\277\321\206\321\226\321\227", nullptr));
     } // retranslateUi
 
 };

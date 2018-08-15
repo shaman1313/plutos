@@ -6,6 +6,7 @@
 #include "pcore.h"
 #include "sellform.h"
 #include "zvit.h"
+#include "infoform.h"
 #include <QMessageBox>
 #include <QObject>
 #include <QString>
@@ -65,4 +66,11 @@ void MainWindow::on_pushButton_main_reports_clicked()
 {
     zvit *zvitForm = new zvit;
     zvitForm->show();
+}
+
+
+void MainWindow::on_action_info_triggered()
+{
+    infoForm *info = new infoForm;
+    info->show();
 }

@@ -31,6 +31,8 @@ private slots:
 
     void on_pushButton_main_reports_clicked();
 
+    void on_action_info_triggered();
+
 private:
     Ui::MainWindow *ui;
 };
