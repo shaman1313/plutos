@@ -353,11 +353,20 @@
    <addaction name="menu"/>
   </widget>
   <action name="action_info">
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Про програму</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
    </property>
   </action>
  </widget>
@@ -366,4 +375,7 @@
   <include location="res.qrc"/>
  </resources>
  <connections/>
+ <slots>
+  <signal>clicked()</signal>
+ </slots>
 </ui>

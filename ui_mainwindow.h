@@ -73,7 +73,9 @@ public:
         MainWindow->setDockNestingEnabled(false);
         action_info = new QAction(MainWindow);
         action_info->setObjectName(QStringLiteral("action_info"));
-        action_info->setCheckable(true);
+        action_info->setChecked(false);
+        action_info->setEnabled(true);
+        action_info->setMenuRole(QAction::PreferencesRole);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         horizontalLayout_2 = new QHBoxLayout(centralWidget);
